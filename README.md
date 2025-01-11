@@ -10,6 +10,8 @@ Create the container for AMDGPU with rocm and localAI
 
 Page to easily configure the creation of an AI Image.
 
+![image](https://github.com/aginies/ai/blob/774865c449736b9cef8f41f49cb5a3734fc5d060/images/imageai.jpg)
+
 # serverhttp.py
 
 Quick http server to get the imageai.html available on a server.
