@@ -18,5 +18,13 @@ Quick http server to get the imageai.html available on a server.
 
 # External URL
 
-https://localai.io/
-https://rocm.docs.amd.com/en/docs-6.2.4/index.html
+LocalAI and rocm:
+- https://localai.io/
+- https://rocm.docs.amd.com/en/docs-6.2.4/index.html
+
+Models:
+- https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending
+- https://civitai.com/models
+
+External Doc:
+- https://www.suse.com/c/generating-images-with-localai-using-a-gpu/
