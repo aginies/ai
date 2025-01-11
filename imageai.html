@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .row {
+            margin-bottom: 15px;
+        }
+        .row.inline {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+	    flex: 1;
+        }
+        .row.inline label {
+            lex: 0 0 100px;
+	    margin-right: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="text"], input[type="number"], textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            width: 100%;
+            resize: vertical;
+            min-height: 100px;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            display: block;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .help-link {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .help-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .help-link a:hover {
+            text-decoration: underline;
+        }
+        .image-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        .spinner {
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .model-size-qualities-container,
+        .year-aesthetic-container,
+        .f16-step-scale-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .model-size-qualities-container > div,
+        .f16-step-scale-container > div,
+        .year-aesthetic-container > div {
+            flex: 1;
+        },
+
+        .model-size-separator {
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            margin: 10px 0;
+        }
+
+	/* Warning styling */
+        .warning {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+    body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+    }
+
+    body.dark-mode .container {
+        border-color: #444;
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    body.dark-mode select, 
+    body.dark-mode input[type="text"], 
+    body.dark-mode input[type="number"], 
+    body.dark-mode textarea {
+        background-color: #333;
+        color: #ffffff;
+        border-color: #555;
+    }
+
+    body.dark-mode button {
+        background-color: #0056b3;
+    }
+
+    body.dark-mode button:hover {
+        background-color: #003d80;
+    }
+
+    body.dark-mode .help-text {
+        color: #aaa;
+    }
+
+    body.dark-mode .warning {
+        color: #ff6666;
+    }
+
+    body.dark-mode .image-container {
+        border-color: #333;
+    }
+    .dark-mode-toggle {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.5em; /* Adjust this value as needed */
+        color: #555; /* Keep it subtle but readable */
+        cursor: pointer;
+    }
+    body.dark-mode .dark-mode-toggle {
+        color: #ccc; /* Slightly lighter color for dark mode */
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+	<h1 style="display: flex; justify-content: space-between; align-items: center;">
+        Local AI Image Generator
+	    <label class="dark-mode-toggle" style="margin-left: 10px;">
+        	<input type="checkbox" id="darkModeToggle" style="margin-right: 5px;">Dark Mode
+	    </label>
+	</h1>
+        <div class="model-size-separator"></div>
+
+        <!-- Model, Size, and Quality on the same line -->
+        <div class="model-size-qualities-container">
+            <div class="row inline">
+                <label for="model">Model</label>
+                <select id="model">
+                    <option value="dreamshaper">DreamShaper</option>
+                    <option value="stablediffusion">Stable Diffusion</option>
+                    <option value="animagine-xl">Animagine XL</option>
+		    <option value="stable-diffusion-3-medium">Stable Diffusion 3 Medium</option>
+                </select>
+            </div>
+            <div class="row inline">
+                <label for="size">Size</label>
+                <select id="size">
+                    <!-- Dynamic options will be inserted here -->
+                </select>
+            </div>
+            <div class="row inline">
+                <label for="qualities">Qualities</label>
+                <select id="qualities">
+                    <option value="masterpiece">Masterpiece</option>
+                    <option value="best quality">Best Quality</option>
+                    <option value="very aesthetic">Very Aesthetic</option>
+                    <option value="absurdres">Absurdres</option>
+                </select>
+		</div>
+	   </div>
+        <div class="row inline" id="year-aesthetic-container" style="display:none;" >
+            <div class="row inline">
+		<label for="year">Year</label>
+	        <select id="year">
+		    <option value="">Empty</option>
+	            <option value="newest">Newest (2021 and beyond)</option>
+	            <option value="recent">Recent (2018 - 2020)</option>
+	            <option value="mid">Mid (2015 - 2017)</option>
+	            <option value="early">Early (2011 - 2014)</option>
+	            <option value="oldest">Oldest (2005 - 2010)</option>
+	        </select>
+       		</div>
+		<div class="row inline">
+		<label for="Aesthetic">Aesthetic</label>
+	        <select id="Aesthetic">
+		    <option value="">Empty</option>
+	            <option value="very aesthetic">very aesthetic</option>
+	            <option value="aesthetic">aesthetic</option>
+	            <option value="displeasing">displeasing</option>
+	            <option value="very displeasing">very displeasing</option>
+	        </select>
+		</div>
+	</div>
+
+        <div class="model-size-separator"></div>
+
+        <!-- F16, Step, and Scale on the same line -->
+        <div class="f16-step-scale-container">
+            <div class="row inline">
+                <label for="step" title="Number of steps to run the model for">Step</label>
+		<div id="step-warning" class="warning" style="display: none;">Warning: Value is very high!</div>
+                <input type="number" id="step" value="50" min="1" step="1">
+            </div>
+            <div class="row inline">
+                <label for="f16" title="Force the usage of float16 instead of float32">F16</label>
+                <select id="f16">
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="row inline">
+                <label for="scale" title="Configuration scale">Scale</label>
+                <select id="scale">
+                    <option value="0.7">0.7</option>
+                    <option value="1">1</option>
+                    <option value="0.5">0.5</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Positive Prompt -->
+        <div class="row">
+            <label for="positive_prompt">Positive Prompt</label>
+            <textarea id="positive_prompt" placeholder="Enter positive prompt"></textarea>
+            <div id="positive_help" class="help-text">Help text for positive prompt will appear here.</div>
+        </div>
+
+        <!-- Negative Prompt -->
+        <div class="row">
+            <label for="negative_prompt">Negative Prompt</label>
+            <textarea id="negative_prompt" placeholder="Enter negative prompt"></textarea>
+            <div id="negative_help" class="help-text">Help text for negative prompt will appear here.</div>
+        </div>
+
+        <div class="model-size-separator"></div>
+        <!-- Help Link -->
+        <div class="help-link">
+		<a href="https://localai.io/features/image-generation/#configuration-parameters" target="_blank">Configuration parameters</a> - <a href="https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending" target="_blank">huggingface.co </a><a href="https://civitai.com/models" target="_blank">civitai.com</a> -  <a href="https://www.suse.com/c/generating-images-with-localai-using-a-gpu/" target="_blank">General deployment info</a>
+	</div>
+        <!-- Generate Button -->
+        <div class="row">
+            <button id="generate">Generate The Image</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="spinner" style="display:none;"></div>
+
+        <!-- Image Display -->
+        <div class="image-container" id="image-container">
+            <!-- Image will be displayed here after generation -->
+        </div>
+
+    </div>
+
+    <script>
+        const modelSelect = document.getElementById('model');
+        const sizeSelect = document.getElementById('size');
+        const positiveHelp = document.getElementById('positive_help');
+        const negativeHelp = document.getElementById('negative_help');
+        const generateButton = document.getElementById('generate');
+        const imageContainer = document.getElementById('image-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const qualitiesSelect = document.getElementById('qualities');
+        const yearSelect = document.getElementById('year');
+	const stepInput = document.getElementById('step');
+        const stepWarning = document.getElementById('step-warning');
+    	const body = document.body;
+	const darkModeToggle = document.getElementById('darkModeToggle');
+	// Enable dark mode by default
+	body.classList.add('dark-mode');
+	darkModeToggle.checked = true;
+
+	darkModeToggle.addEventListener('change', () => {
+	    document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+	    // Save the user's preference in localStorage
+	    localStorage.setItem('darkMode', darkModeToggle.checked ? 'enabled' : 'disabled');
+	});
+
+	// Load user's preference on page load
+	window.addEventListener('DOMContentLoaded', () => {
+	    const darkModePreference = localStorage.getItem('darkMode');
+	    if (darkModePreference === 'enabled') {
+	        document.body.classList.add('dark-mode');
+	        darkModeToggle.checked = true;
+	    }
+	});
+
+        const modelHelpTexts = {
+            dreamshaper: {
+                positive: "Main subject with details, Secondary subjects, Background, Style Artists, Lighting Pose, perspective Adjectives",
+                negative: "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, bad anatomy, blurred, watermark, grainy, signature, cut off, draft, canvas frame, cartoon, 3d, weird colors, morbid, mutilated, extra fingers, mutated hands, cloned face, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, mutated hands, fused fingers, too many fingers, long neck, Photoshop, video game "
+            },
+            stablediffusion: {
+                positive: "Main subject with details, Secondary subjects, Background, Style, Artists, Lighting Pose, perspective Adjectives",
+                negative: "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, bad anatomy, blurred, watermark, grainy, signature, cut off, draft, canvas frame, cartoon, 3d, weird colors, morbid, mutilated, extra fingers, mutated hands, cloned face, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, mutated hands, fused fingers, too many fingers, long neck, Photoshop, video game"
+            },
+            "animagine-xl": {
+                positive: "1girl/1boy, character name, from what series, everything else in any order.",
+                negative: "nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, unfinished, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, bad anatomy, blurred, watermark, grainy, cut off, draft, canvas frame, cartoon, 3d, weird colors, morbid, mutilated, extra fingers, mutated hands, cloned face, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, mutated hands, fused fingers, too many fingers, long neck, Photoshop, video game"
+            }
+        };
+
+        function updateSizeOptions() {
+            sizeSelect.innerHTML = "";
+            const model = modelSelect.value;
+            const sizes = model === "animagine-xl" ? ["1344x768", "1216x832", "1024x1024", "1536x640"] : ["512x512", "1024x1024"];
+
+            sizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = size;
+                sizeSelect.appendChild(option);
+            });
+        }
+        modelSelect.addEventListener('change', () => {
+            updateSizeOptions();
+            updateHelpText();
+	    if (modelSelect.value === 'animagine-xl') {
+		document.getElementById('year-aesthetic-container').style.display = 'block';
+            } else {
+		document.getElementById('year-aesthetic-container').style.display = 'none';
+            }
+        });
+
+
+
+        function updateHelpText() {
+            const model = modelSelect.value;
+            positiveHelp.textContent = modelHelpTexts[model].positive;
+            negativeHelp.textContent = modelHelpTexts[model].negative;
+        }
+
+        // Check step value on input change
+        stepInput.addEventListener('input', () => {
+            const stepValue = parseInt(stepInput.value, 10);
+            if (stepValue > 200) {
+                stepWarning.style.display = 'block';
+            } else {
+                stepWarning.style.display = 'none';
+            }
+        });
+
+        generateButton.addEventListener('click', async () => {
+	    const serverUrl = 'http://10.0.1.38:8080';
+
+            generateButton.disabled = true;
+
+            const model = modelSelect.value;
+            const step = document.getElementById('step').value;
+            const f16 = document.getElementById('f16').value;
+            const scale = document.getElementById('scale').value;
+            const sizeu = sizeSelect.value;
+            const positivePrompt = document.getElementById('positive_prompt').value;
+            const negativePrompt = document.getElementById('negative_prompt').value;
+            const quality = qualitiesSelect.value; // Get the selected quality
+	    const year = yearSelect.value;
+
+            const payload = {
+		    prompt: `${positivePrompt}, ${quality}, ${year}|${negativePrompt}`, // Append the quality to the prompt
+                model: model,
+                step: parseInt(step, 10),
+                f16: f16 === "true",
+                cfg_scale: parseFloat(scale),
+                size: sizeu
+            };
+
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch( serverUrl+'/v1/images/generations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                // Hide loading spinner
+                loadingSpinner.style.display = 'none';
+
+                // Display the image
+		if (result.data && result.data[0] && result.data[0].url) {
+	                const imageUrl = result.data[0].url;
+        	        const img = document.createElement('img');
+	                img.src = imageUrl;
+	                img.alt = 'Generated Image';
+	                img.onclick = () => window.open(imageUrl, '_blank'); // Open image in new tab on click
+	                imageContainer.innerHTML = ''; // Clear any previous image
+	                imageContainer.appendChild(img);
+		} else {
+		    imageContainer.innerHTML = '<p style="color:red;">Failed to generate image. Please try again.</p>';
+
+		}
+            } catch (error) {
+                console.error('Error during image generation:', error);
+		imageContainer.innerHTML = '<p style="color:red;">Error generating image. Check the console for details.</p>';
+		loadingSpinner.style.display = 'none';
+            } finally {
+                // Re-enable the Generate button after the process is complete
+                generateButton.disabled = false;
+            }
+        });
+
+        // Initialize default values
+        updateSizeOptions();
+        updateHelpText();
+    </script>
+</body>
+</html>
+
