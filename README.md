@@ -30,6 +30,10 @@ cp imageai.html ai
 python3.11 serverhttp.py
 ```
 
+# serverimage.py
+
+Quick server to show all the images by date creation on a page.
+
 # External URL
 
 LocalAI and rocm:
