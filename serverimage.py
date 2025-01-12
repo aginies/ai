@@ -3,6 +3,7 @@ import signal
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from jinja2 import Template
+from urllib.parse import urlparse, parse_qs
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -24,7 +25,22 @@ HTML_TEMPLATE = """
         .gallery-item { text-align: center; }
         .gallery img { width: {{ thumb_size }}px; height: auto; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; }
         .gallery-item span { display: block; margin-top: 5px; font-size: 14px; color: #333; }
+        .delete-button { display: block; margin-top: 5px; background-color: #ff4d4d; color: white; border: none; padding: 3px 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
     </style>
+    <script>
+        function deleteImage(imageName) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch(`/delete?name=${encodeURIComponent(imageName)}`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Failed to delete image");
+                        }
+                    });
+            }
+        }
+    </script>
 </head>
 <body>
     <h1 style="text-align:center;">Image Gallery</h1>
@@ -35,6 +51,7 @@ HTML_TEMPLATE = """
                 <img src="{{ image.path }}" alt="{{ image.name }}">
             </a>
             <span>{{ image.name }}</span>
+            <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
         </div>
         {% endfor %}
     </div>
@@ -67,6 +84,22 @@ class CustomHandler(SimpleHTTPRequestHandler):
             self.path = "/index.html"
         return super().do_GET()
 
+    def do_POST(self):
+        parsed_path = urlparse(self.path)
+        if parsed_path.path == "/delete":
+            query = parse_qs(parsed_path.query)
+            if "name" in query:
+                image_name = query["name"][0]
+                image_path = os.path.join(IMAGES_DIR, image_name)
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                    generate_html()
+                    self.send_response(200)
+                    self.end_headers()
+                    return
+        self.send_response(400)
+        self.end_headers()
+
 # Watchdog handler to monitor changes in the directory
 class ImageChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
@@ -81,14 +114,14 @@ class ServerThread(threading.Thread):
         self.daemon = True  # Ensures thread terminates with the main program
 
     def run(self):
-        print("Starting server on http://localhost:8000... Press Ctrl+C to stop.")
+        print("Starting HTTP server on http://localhost:8000... Press Ctrl+C to stop.")
         try:
             self.server.serve_forever()
         except Exception:
             pass  # Allow shutdown to proceed
 
     def stop(self):
-        print("Shutting down server...")
+        print("Shutting down HTTP server...")
         self.server.shutdown()
         self.server.server_close()
 
@@ -108,7 +141,7 @@ if __name__ == "__main__":
 
     # Graceful shutdown handler
     def shutdown_handler(signum, frame):
-        print("\nStopping observer and server...")
+        print("\nStopping observer and HTTP server...")
         observer.stop()
         observer.join()
         server_thread.stop()
