@@ -325,6 +325,7 @@
         <div class="model-size-separator"></div>
         <!-- Help Link -->
         <div class="help-link">
+	    <a href="http://10.0.1.38:8000/" target="_blank">AI Images Gallery</a> -
             <a href="https://localai.io/features/image-generation/#configuration-parameters" target="_blank">Configuration parameters</a> - 
             <a href="https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending" target="_blank">huggingface.co</a>
             <a href="https://civitai.com/models" target="_blank">civitai.com</a> -  
@@ -433,7 +434,7 @@
         });
 
         generateButton.addEventListener('click', async () => {
-	    const serverUrl = 'http://10.0.1.38:8080';
+	    const serverUrl = 'http://10.0.1.38';
 
             generateButton.disabled = true;
 
@@ -460,7 +461,7 @@
             loadingSpinner.style.display = 'block';
 
             try {
-                const response = await fetch( serverUrl+'/v1/images/generations', {
+                const response = await fetch( serverUrl+':8080/v1/images/generations', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
