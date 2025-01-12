@@ -32,7 +32,7 @@ python3.11 serverhttp.py
 
 # serverimage.py
 
-Quick server to show all the images by date creation on a page.
+Quick server to show all the images by date creation on a page (port 8000)
 
 # External URL
 
