@@ -24,11 +24,12 @@
             display: flex;
             gap: 10px;
             align-items: center;
-	    flex: 1;
+            flex: 1;
         }
         .row.inline label {
-            lex: 0 0 100px;
-	    margin-right: 10px;
+            flex: 0 0 100px;
+	    width: 100px;
+            margin-right: 10px;
         }
         label {
             font-weight: bold;
@@ -109,7 +110,7 @@
         .year-aesthetic-container,
         .f16-step-scale-container {
             display: flex;
-            justify-content: space-between;
+	    flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 15px;
         }
@@ -117,8 +118,8 @@
         .model-size-qualities-container > div,
         .f16-step-scale-container > div,
         .year-aesthetic-container > div {
-            flex: 1;
-        },
+            flex: 1 1 200px;
+        }
 
         .model-size-separator {
             width: 100%;
@@ -127,72 +128,107 @@
             margin: 10px 0;
         }
 
-	/* Warning styling */
+        /* Warning styling */
         .warning {
             color: red;
             font-size: 0.9em;
             margin-top: 5px;
         }
 
-    body.dark-mode {
-    background-color: #121212;
-    color: #ffffff;
-    }
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
 
-    body.dark-mode .container {
-        border-color: #444;
-        background-color: #1e1e1e;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
+        body.dark-mode .container {
+            border-color: #444;
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
 
-    body.dark-mode select, 
-    body.dark-mode input[type="text"], 
-    body.dark-mode input[type="number"], 
-    body.dark-mode textarea {
-        background-color: #333;
-        color: #ffffff;
-        border-color: #555;
-    }
+        body.dark-mode select,
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="number"],
+        body.dark-mode textarea {
+            background-color: #333;
+            color: #ffffff;
+            border-color: #555;
+        }
 
-    body.dark-mode button {
-        background-color: #0056b3;
-    }
+        body.dark-mode button {
+            background-color: #0056b3;
+        }
 
-    body.dark-mode button:hover {
-        background-color: #003d80;
-    }
+        body.dark-mode button:hover {
+            background-color: #003d80;
+        }
 
-    body.dark-mode .help-text {
-        color: #aaa;
-    }
+        body.dark-mode .help-text {
+            color: #aaa;
+        }
 
-    body.dark-mode .warning {
-        color: #ff6666;
-    }
+        body.dark-mode .warning {
+            color: #ff6666;
+        }
 
-    body.dark-mode .image-container {
-        border-color: #333;
-    }
-    .dark-mode-toggle {
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.5em; /* Adjust this value as needed */
-        color: #555; /* Keep it subtle but readable */
-        cursor: pointer;
-    }
-    body.dark-mode .dark-mode-toggle {
-        color: #ccc; /* Slightly lighter color for dark mode */
-    }
+        body.dark-mode .image-container {
+            border-color: #333;
+        }
+
+        .dark-mode-toggle {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.5em;
+            color: #555;
+            cursor: pointer;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            color: #ccc;
+        }
+
+        /* Media Queries for smaller screens */
+        @media (max-width: 768px) {
+	    .model-size-qualities-container {
+		display: flex;
+		justify-content: space-between;
+            }
+
+            .model-size-qualities-container,
+            .f16-step-scale-container,
+            .year-aesthetic-container {
+                flex-direction: column;
+            }
+
+            .row.inline {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .row.inline label {
+                flex: none;
+                margin-bottom: 5px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .help-text {
+                font-size: 0.8em;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-	<h1 style="display: flex; justify-content: space-between; align-items: center;">
-        Local AI Image Generator
-	    <label class="dark-mode-toggle" style="margin-left: 10px;">
-        	<input type="checkbox" id="darkModeToggle" style="margin-right: 5px;">Dark Mode
-	    </label>
-	</h1>
+        <h1 style="display: flex; justify-content: space-between; align-items: center;">
+            Local AI Image Generator
+            <label class="dark-mode-toggle" style="margin-left: 10px;">
+                <input type="checkbox" id="darkModeToggle" style="margin-right: 5px;">Dark Mode
+            </label>
+        </h1>
         <div class="model-size-separator"></div>
 
         <!-- Model, Size, and Quality on the same line -->
@@ -203,7 +239,7 @@
                     <option value="dreamshaper">DreamShaper</option>
                     <option value="stablediffusion">Stable Diffusion</option>
                     <option value="animagine-xl">Animagine XL</option>
-		    <option value="stable-diffusion-3-medium">Stable Diffusion 3 Medium</option>
+                    <option value="stable-diffusion-3-medium">Stable Diffusion 3 Medium</option>
                 </select>
             </div>
             <div class="row inline">
@@ -220,31 +256,31 @@
                     <option value="very aesthetic">Very Aesthetic</option>
                     <option value="absurdres">Absurdres</option>
                 </select>
-		</div>
-	   </div>
-        <div class="row inline" id="year-aesthetic-container" style="display:none;" >
+            </div>
+        </div>
+        <div class="row inline" id="year-aesthetic-container" style="display:none;">
             <div class="row inline">
-		<label for="year">Year</label>
-	        <select id="year">
-		    <option value="">Empty</option>
-	            <option value="newest">Newest (2021 and beyond)</option>
-	            <option value="recent">Recent (2018 - 2020)</option>
-	            <option value="mid">Mid (2015 - 2017)</option>
-	            <option value="early">Early (2011 - 2014)</option>
-	            <option value="oldest">Oldest (2005 - 2010)</option>
-	        </select>
-       		</div>
-		<div class="row inline">
-		<label for="Aesthetic">Aesthetic</label>
-	        <select id="Aesthetic">
-		    <option value="">Empty</option>
-	            <option value="very aesthetic">very aesthetic</option>
-	            <option value="aesthetic">aesthetic</option>
-	            <option value="displeasing">displeasing</option>
-	            <option value="very displeasing">very displeasing</option>
-	        </select>
-		</div>
-	</div>
+                <label for="year">Year</label>
+                <select id="year">
+                    <option value="">Empty</option>
+                    <option value="newest">Newest (2021 and beyond)</option>
+                    <option value="recent">Recent (2018 - 2020)</option>
+                    <option value="mid">Mid (2015 - 2017)</option>
+                    <option value="early">Early (2011 - 2014)</option>
+                    <option value="oldest">Oldest (2005 - 2010)</option>
+                </select>
+            </div>
+            <div class="row inline">
+                <label for="Aesthetic">Aesthetic</label>
+                <select id="Aesthetic">
+                    <option value="">Empty</option>
+                    <option value="very aesthetic">very aesthetic</option>
+                    <option value="aesthetic">aesthetic</option>
+                    <option value="displeasing">displeasing</option>
+                    <option value="very displeasing">very displeasing</option>
+                </select>
+            </div>
+        </div>
 
         <div class="model-size-separator"></div>
 
@@ -252,7 +288,7 @@
         <div class="f16-step-scale-container">
             <div class="row inline">
                 <label for="step" title="Number of steps to run the model for">Step</label>
-		<div id="step-warning" class="warning" style="display: none;">Warning: Value is very high!</div>
+                <div id="step-warning" class="warning" style="display: none;">Warning: Value is very high!</div>
                 <input type="number" id="step" value="50" min="1" step="1">
             </div>
             <div class="row inline">
@@ -289,8 +325,11 @@
         <div class="model-size-separator"></div>
         <!-- Help Link -->
         <div class="help-link">
-		<a href="https://localai.io/features/image-generation/#configuration-parameters" target="_blank">Configuration parameters</a> - <a href="https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending" target="_blank">huggingface.co </a><a href="https://civitai.com/models" target="_blank">civitai.com</a> -  <a href="https://www.suse.com/c/generating-images-with-localai-using-a-gpu/" target="_blank">General deployment info</a>
-	</div>
+            <a href="https://localai.io/features/image-generation/#configuration-parameters" target="_blank">Configuration parameters</a> - 
+            <a href="https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending" target="_blank">huggingface.co</a>
+            <a href="https://civitai.com/models" target="_blank">civitai.com</a> -  
+            <a href="https://www.suse.com/c/generating-images-with-localai-using-a-gpu/" target="_blank">General deployment info</a>
+        </div>
         <!-- Generate Button -->
         <div class="row">
             <button id="generate">Generate The Image</button>
@@ -305,7 +344,6 @@
         </div>
 
     </div>
-
     <script>
         const modelSelect = document.getElementById('model');
         const sizeSelect = document.getElementById('size');
