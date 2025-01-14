@@ -74,6 +74,8 @@ python3.11 serverhttp.py
 
 Quick server to show all the images by date creation on a page (port 8000)
 
+![image](https://github.com/aginies/ai/blob/c153a4708663c8cf66662107e2111da04ff7071e/images/serverimage.jpg)
+
 # External URL
 
 LocalAI and rocm:
