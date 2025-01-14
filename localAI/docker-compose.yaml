@@ -19,7 +19,7 @@ services:
       - DEBUG=true
       - REBUILD=false
       - PROFILE=gpu
-      - THREADS=7
+      - THREADS=12
       - BUILD_PARALLELISM=12
       - BUILD_TYPE=hipblas
       - GPU_TARGETS=gfx1100
