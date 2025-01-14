@@ -1,0 +1,37 @@
+# docker-compose.yaml
+# antoine@ginies.org
+# Prepare for AMDGPU!
+#version: '3.8'
+
+services:
+  api:
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: stable-diffusion-webui:latest
+    container_name: stable-diffusion-webui
+    network_mode: host
+    environment:
+      # false, true, debug
+      - BUILD=debug
+      - PROFILE=gpu
+      # adjust to you AMD GPU or Nvidia
+      # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
+      - GPU_TARGETS=gfx1100
+      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+      #
+      # LAUNCH OPTIONS
+      # if you want to enable it on all interfaces add: --listen (default)
+      # see: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Optimizations
+      # https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings
+      # AMDGPU: --use-directml, for recent AMDGPUs, ZLUDA is more recommended
+      - OPTIONS=--models-dir /models --listen --use-zluda
+    ports:
+      - "7860:7860"
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    volumes:
+      - /home/aginies/LocalAI/models:/models
+#      - /home/aginies/LocalAI/images:/stable-diffusion-webui/outputs/txt2img-images
