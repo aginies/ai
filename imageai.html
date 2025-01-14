@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 15px;
         }
         .container {
             max-width: 800px;
@@ -18,7 +18,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .row {
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
         .row.inline {
             display: flex;
@@ -70,8 +70,8 @@
             cursor: not-allowed;
         }
         .help-link {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
             text-align: center;
         }
         .help-link a {
@@ -82,7 +82,7 @@
             text-decoration: underline;
         }
         .image-container {
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
         }
         .image-container img {
@@ -112,7 +112,7 @@
             display: flex;
 	    flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .model-size-qualities-container > div,
@@ -186,7 +186,21 @@
         body.dark-mode .dark-mode-toggle {
             color: #ccc;
         }
-
+        .options-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px; /* Space between the options */
+		margin-bottom: 10px;
+	}
+	.option {
+		text-align: center; /* Center the label above the select */
+	}
+	select {
+	      margin-top: 5px;
+	      padding: 5px;
+	      font-size: 14px;
+	}
         /* Media Queries for smaller screens */
         @media (max-width: 768px) {
 	    .model-size-qualities-container {
@@ -218,7 +232,6 @@
                 font-size: 0.8em;
             }
         }
-
     </style>
 </head>
 <body>
@@ -236,16 +249,15 @@
             <div class="row inline">
                 <label for="model">Model</label>
                 <select id="model">
+                    <option value="animagine-xl">Animagine XL</option>
                     <option value="dreamshaper">DreamShaper</option>
                     <option value="stablediffusion">Stable Diffusion</option>
-                    <option value="animagine-xl">Animagine XL</option>
                     <option value="stable-diffusion-3-medium">Stable Diffusion 3 Medium</option>
                 </select>
             </div>
             <div class="row inline">
                 <label for="size">Size</label>
                 <select id="size">
-                    <!-- Dynamic options will be inserted here -->
                 </select>
             </div>
             <div class="row inline">
@@ -306,17 +318,49 @@
                 <label for="seed" title="Seed value">Seed</label>
                     <input type="number" id="seed" value="-1" min="1" step="11" style="width: 100px;">
             </div>
-	    <div><p id="seedValueDisplay"></p></div>
-
+	    <div class="row inline">
+                <label for="currentseed" title="Seed value">Current seed</label>
+		<input type="text" id="seedValueDisplay" readonly>
+	    </div>
+	    <div class="row inline">
+		    <label for="UHDToggle" style="margin-left: 10px;"></label>
+        	<input type="checkbox" id="UHDToggle" style="margin-right: 5px;">High Resolution
+	    </div>
         </div>
-
+        <div class="model-size-separator"></div>
+	<div class="options-container">
+		<div class="option">
+			<label for="styleSelect">Style</label>
+			<select id="styleSelect"></select>
+		</div>
+		<div class="option">
+			<label for="shottypeSelect">Shot Type</label>
+			<select id="shottypeSelect"></select>
+		</div>
+		<div class="option">
+			<label for="lightingSelect">Lighting</label>
+			<select id="lightingSelect"></select>
+		</div>
+		<div class="option">
+			<label for="contextSelect">Context</label>
+			<select id="contextSelect"></select>
+		</div>
+		<div class="option">
+			<label for="lensSelect">Lens</label>
+			<select id="lensSelect"></select>
+		</div>
+		<div class="option">
+			<label for="deviceSelect">Device</label>
+			<select id="deviceSelect"></select>
+		</div>
+	</div>
         <!-- Positive Prompt -->
         <div class="row">
             <label for="positive_prompt">Positive Prompt</label>
             <textarea id="positive_prompt" placeholder="Enter positive prompt"></textarea>
             <div id="positive_help" class="help-text">Help text for positive prompt will appear here.</div>
         </div>
-
+	
         <!-- Negative Prompt -->
         <div class="row">
             <label for="negative_prompt">Negative Prompt</label>
@@ -327,11 +371,10 @@
         <div class="model-size-separator"></div>
         <!-- Help Link -->
         <div class="help-link">
+            <a href="https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2010-28.pdf" target="_blank">OpenART Prompt Book</a> - 
 	    <a href="http://10.0.1.38:8000/" target="_blank">AI Images Gallery</a> -
-            <a href="https://localai.io/features/image-generation/#configuration-parameters" target="_blank">Configuration parameters</a> - 
             <a href="https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending" target="_blank">huggingface.co</a>
-            <a href="https://civitai.com/models" target="_blank">civitai.com</a> -  
-            <a href="https://www.suse.com/c/generating-images-with-localai-using-a-gpu/" target="_blank">General deployment info</a>
+            <a href="https://civitai.com/models" target="_blank">civitai.com</a>
         </div>
         <!-- Generate Button -->
         <div class="row">
@@ -348,6 +391,29 @@
 
     </div>
     <script>
+	const styles = [ "None", "Hyperrealistic", "Impressionism", "Surrealism", "Expressionism", "Cubism", "Futurism", "Baroque", "Rococo", "Minimalism", "Oil Painting", "Watercolor", "Digital Art", "Pencil Sketch", "Charcoal Drawing", "Ink Illustration", "Collage", "3D Render", "Graffiti/Street Art", "Anime/Manga", "Cyberpunk", "Steampunk", "Fantasy Art", "Sci-Fi", "Retro/Vintage", "Noir", "Van Gogh", "Monet", "H.R. Giger", "Hayao Miyazaki", "Moebius", "Ethereal", "Gothic", "Bohemian", "Corporate Memphis", "Kawaii", "Abstract", "Pixel Art", "Tropical", "Desert", "Underwater", "Cosmic", "Portrait", "Landscape", "Macro", "Bokeh", "Black and White", "HDR", "Cinematic", "Dreamlike AI", "Generative Collage", "Dystopian Realism", "Vaporwave", "Wood" ];
+	const shottype = [ "None", "Close-up", "Extreme Close-up", "POV", "Medium shot", "Long shot", "Portrait", "Satellite", "Colorsplash", "Bokeh" ];
+	const lightingtype = [ "None", "Soft", "Ambient", "Ring", "Sun", "Cinematic", "Nostalgic", "Purple Neon", "Sun Rays"];
+	const contexttype = [ "None", "Indoor", "Outdoor", "At night", "In the park", "Studio", "sovietwave", "Post-Apocalyptic" ];
+	const lenstype = [ "None", "Wide-angle", "Telephoto", "24mm", "28mm", "35mm", "EF 70mm", "Macro", "Thermal", "Drone", "800mm" ];
+	const devicetype = [ "None", "iPhone X", "CCTV", "Nikon Z FX", "Canon", "GoPro" ];
+	// function to populate the select option
+	const populateSelect = (selectId, items) => {
+	      const selectElement = document.getElementById(selectId);
+	      items.forEach(item => {
+	        const option = document.createElement("option");
+	        option.value = item;
+	        option.textContent = item;
+	        selectElement.appendChild(option);
+	      });
+	};
+	populateSelect("styleSelect", styles);
+	populateSelect("shottypeSelect", shottype);
+	populateSelect("lightingSelect", lightingtype);
+	populateSelect("contextSelect", contexttype);
+	populateSelect("lensSelect", lenstype);
+	populateSelect("deviceSelect", devicetype);
+
         const modelSelect = document.getElementById('model');
         const sizeSelect = document.getElementById('size');
         const positiveHelp = document.getElementById('positive_help');
@@ -362,9 +428,12 @@
         const stepWarning = document.getElementById('step-warning');
     	const body = document.body;
 	const darkModeToggle = document.getElementById('darkModeToggle');
+	const UHDToggle = document.getElementById('UHDToggle');
+
 	// Enable dark mode by default
 	body.classList.add('dark-mode');
 	darkModeToggle.checked = true;
+	UHDToggle.checked = true;
 
 	darkModeToggle.addEventListener('change', () => {
 	    document.body.classList.toggle('dark-mode', darkModeToggle.checked);
@@ -446,15 +515,31 @@
             const f16 = document.getElementById('f16').value;
             const scale = document.getElementById('scale').value;
             const seedInput = document.getElementById('seed');
+	    const stylev = document.getElementById('styleSelect').value;
+	    const shottypev = document.getElementById('shottypeSelect').value;
+	    const lightingv = document.getElementById('lightingSelect').value;
+	    const contextv = document.getElementById('contextSelect').value;
+	    const lensv = document.getElementById('lensSelect').value;
+	    const devicev = document.getElementById('deviceSelect').value;
             const sizeu = sizeSelect.value;
             const positivePrompt = document.getElementById('positive_prompt').value;
             const negativePrompt = document.getElementById('negative_prompt').value;
+	    const UHDcheckbox = document.getElementById('UHDToggle');
+	    const UHDv = UHDcheckbox.checked ? "8k, uhd, hdr" : "";
             const quality = qualitiesSelect.value; // Get the selected quality
 	    const year = yearSelect.value;
 	    const seedValue = parseInt(seedInput.value, 10) || 0;
 
+	    const promptParts = [positivePrompt,];
+	    const tocheck = [ year, stylev, shottypev, lightingv, contextv, lensv, devicev, UHDv ];
+	    tocheck.forEach((varValue) => {
+		 if (varValue && varValue !== "" && varValue !== "None") {
+   		 	promptParts.push(varValue);
+		 }
+	    });
+	    promptParts.push(`|${negativePrompt}`);
             const payload = {
-		    prompt: `${positivePrompt}, ${quality}, ${year}|${negativePrompt}`, // Append the quality to the prompt
+		prompt: promptParts.join(', '),
                 model: model,
                 step: parseInt(step, 10),
                 f16: f16 === "true",
@@ -498,10 +583,8 @@
 		}
                 // Extract "created" from the response and set it to the seed input
                 if (result.created) {
-                    //const seedInput = document.getElementById('seed');
-	            //seedInput.value = parseInt(result.created, 10);
 		    const seedValueDisplay = document.getElementById('seedValueDisplay');
-	            seedValueDisplay.textContent = `Returned Seed Value: ${result.created}`;
+		    document.getElementById('seedValueDisplay').value = `${result.created}`;
                 }
 
             } catch (error) {
