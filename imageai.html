@@ -299,13 +299,14 @@
                 </select>
             </div>
             <div class="row inline">
-                <label for="scale" title="Configuration scale">CFG Scale</label>
-                    <input type="number" id="scale" value="7" min="1" step="20">
+                <label for="scale" title="Configuration scale">Scale</label>
+                    <input type="number" id="scale" value="7" min="1" step="1">
             </div>
             <div class="row inline">
                 <label for="seed" title="Seed value">Seed</label>
                     <input type="number" id="seed" value="-1" min="1" step="11" style="width: 100px;">
             </div>
+	    <div><p id="seedValueDisplay"></p></div>
 
         </div>
 
@@ -497,8 +498,10 @@
 		}
                 // Extract "created" from the response and set it to the seed input
                 if (result.created) {
-                    const seedInput = document.getElementById('seed');
-	            seedInput.value = parseInt(result.created, 10);
+                    //const seedInput = document.getElementById('seed');
+	            //seedInput.value = parseInt(result.created, 10);
+		    const seedValueDisplay = document.getElementById('seedValueDisplay');
+	            seedValueDisplay.textContent = `Returned Seed Value: ${result.created}`;
                 }
 
             } catch (error) {
