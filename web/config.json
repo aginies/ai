@@ -1,0 +1,28 @@
+{
+  "styles": [
+    "None", "Hyperrealistic", "Impressionism", "Surrealism", "Expressionism", "Cubism", "Futurism", "Baroque", "Rococo", "Minimalism",
+    "Oil Painting", "Watercolor", "Digital Art", "Pencil Sketch", "Charcoal Drawing", "Ink Illustration", "Collage", "3D Render",
+    "Graffiti/Street Art", "Anime/Manga", "Cyberpunk", "Steampunk", "Fantasy Art", "Sci-Fi", "Retro/Vintage", "Noir", "Van Gogh",
+    "Monet", "H.R. Giger", "Hayao Miyazaki", "Moebius", "Ethereal", "Gothic", "Bohemian", "Corporate Memphis", "Kawaii", "Abstract",
+    "Pixel Art", "Tropical", "Desert", "Underwater", "Cosmic", "Portrait", "Landscape", "Macro", "Bokeh", "Black and White", "HDR",
+    "Cinematic", "Dreamlike AI", "Generative Collage", "Dystopian Realism", "Vaporwave", "Wood"
+  ],
+  "shot": [
+    "None", "Close-up", "Extreme Close-up", "POV", "Medium shot", "Long shot", "Portrait", "Satellite", "Colorsplash", "Bokeh"
+  ],
+  "lighting": [
+    "None", "Soft", "Ambient", "Ring", "Sun", "Cinematic", "Nostalgic", "Purple Neon", "Sun Rays"
+  ],
+  "context": [
+    "None", "Indoor", "Outdoor", "At night", "In the park", "Studio", "sovietwave", "Post-Apocalyptic"
+  ],
+  "lens": [
+    "None", "Wide-angle", "Telephoto", "24mm", "28mm", "35mm", "EF 70mm", "Macro", "Thermal", "Drone", "800mm"
+  ],
+  "device": [
+    "None", "iPhone X", "CCTV", "Nikon Z FX", "Canon", "GoPro"
+  ],
+  "qualities": [
+    "masterpiece", "best quality", "very aesthetic", "absurdres"
+  ]
+}

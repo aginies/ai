@@ -82,53 +82,61 @@ HTML_TEMPLATE = """
             background-color: #4CAF50;
             color: white;
         }
-        .page-input {
-            margin-top: 20px;
-            text-align: center;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
-        input[type="number"] {
-            padding: 5px;
-            border: 1px solid #444;
-            border-radius: 3px;
-            background-color: #333;
-            color: white;
+        .modal img {
+            max-width: 90%;
+            max-height: 80%;
         }
-        button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            background-color: #ff4d4d;
+        .modal .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             color: white;
+            font-size: 24px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #ff2a2a; /* Dark mode hover color for buttons */
+        .modal .nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 36px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
         }
+        .modal .prev {
+            left: 20px;
+        }
+        .modal .next {
+            right: 20px;
+        }
+        #modalImage {
+            position: absolute;
+            max-width: 90%;
+            max-height: 90%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
     </style>
-    <script>
-        function deleteImage(imageName) {
-            if (confirm('Are you sure you want to delete this image?')) {
-                var page = {{ current_page }};
-                fetch(`/delete?name=${encodeURIComponent(imageName)}&page=${encodeURIComponent(page)}`, { method: 'POST' })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.reload();
-                        } else {
-                            alert("Failed to delete image");
-                        }
-                    });
-            }
-        }
-    </script>
 </head>
 <body>
     <h1 style="text-align:center;">AI Generated Images Gallery</h1>
     <div class="gallery">
         {% for image in images %}
         <div class="gallery-item">
-            <a href="{{ image.path }}" target="_blank">
-                <img src="{{ image.path }}" alt="{{ image.name }}">
-            </a>
+            <img src="{{ image.path }}" alt="{{ image.name }}" onclick="openModal({{ loop.index0 }})">
             <span>{{ image.name }}</span>
             <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
         </div>
@@ -143,6 +151,78 @@ HTML_TEMPLATE = """
         <a href="/?page={{ current_page + 1 }}">Next</a>
         {% endif %}
     </div>
+
+    <!-- Modal for fullscreen view -->
+    <div class="modal" id="imageModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <span class="nav prev" onclick="prevImage()">&#10094;</span>
+        <span class="nav next" onclick="nextImage()">&#10095;</span>
+        <img id="modalImage" src="" alt="">
+    </div>
+
+    <script>
+        let images = {{ images | tojson }};
+        let currentIndex = 0;
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (modal.style.display === 'block') { // Check if modal is open
+                switch (event.key) {
+                    case 'Escape':
+                        closeModal();
+                        break;
+                    case 'ArrowLeft':
+                        prevImage();
+                        break;
+                    case 'ArrowRight':
+                        nextImage();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        function openModal(index) {
+            currentIndex = index;
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImage.src = images[currentIndex].path;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+
+        function prevImage() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                document.getElementById('modalImage').src = images[currentIndex].path;
+            }
+        }
+
+        function nextImage() {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                document.getElementById('modalImage').src = images[currentIndex].path;
+            }
+        }
+
+        function deleteImage(imageName) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                var page = {{ current_page }};
+                fetch(`/delete?name=${encodeURIComponent(imageName)}&page=${encodeURIComponent(page)}`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Failed to delete image");
+                        }
+                    });
+            }
+        }
+    </script>
 </body>
 </html>
 """
@@ -215,12 +295,6 @@ class ImageChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         if event.event_type in ["created", "deleted", "modified"]:
             generate_html()  # Regenerate HTML for page 1
-
-# Watchdog to monitor directory changes
-class DirectoryWatcher(FileSystemEventHandler):
-    def on_modified(self, event):
-        if not event.is_directory:
-            generate_html(1)  # Regenerate HTML for page 1 when any file is modified
 
 # HTTP server in a thread
 class ServerThread(threading.Thread):

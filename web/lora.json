@@ -1,0 +1,74 @@
+[
+    {
+        "filename": "PORSCHE911GT3.safetensors",
+        "description": "PORSCHE911GT3"
+    },
+    {
+        "filename": "FORDMUSTANGGT.safetensors",
+        "description": "FORDMUSTANGGT"
+    },
+    {
+        "filename": "Hayden_Panettiere_Flux.safetensors",
+        "description": "Hayden_Panettiere_Flux"
+    },
+    {
+        "filename": "Cameron_Diaz_1990s_Flux.safetensors",
+        "description": "Cameron_Diaz_1990s_Flux"
+    },
+    {
+        "filename": "Amy_Adams_Flux.safetensors",
+        "description": "Amy_Adams_Flux"
+    },
+    {
+        "filename": "Pamela_Anderson_1990s_Flux.safetensors",
+        "description": "Pamela_Anderson_1990s_Flux"
+    },
+    {
+        "filename": "flux1-dev-fp8.safetensors",
+        "description": "flux1-dev-fp8"
+    },
+    {
+        "filename": "Hyperrealism style.safetensors",
+        "description": "Hyperrealism style"
+    },
+    {
+        "filename": "racing car style v1.safetensors",
+        "description": "racing car style v1"
+    },
+    {
+        "filename": "Unreal Engine style.safetensors",
+        "description": "Unreal Engine style"
+    },
+    {
+        "filename": "66vetteILL.safetensors",
+        "description": "66vetteILL"
+    },
+    {
+        "filename": "Ford-MUSTANG-flux-lora.safetensors",
+        "description": "Ford-MUSTANG-flux-lora"
+    },
+    {
+        "filename": "GT40_MKIIFlux_v1_byTigonTX.safetensors",
+        "description": "GT40_MKIIFlux_v1_byTigonTX"
+    },
+    {
+        "filename": "Lamborghini Huracan mosess version-flux-lora.safetensors",
+        "description": "Lamborghini Huracan mosess version-flux-lora"
+    },
+    {
+        "filename": "Lamborghini Temerario_DoRa_EP_10.safetensors",
+        "description": "Lamborghini Temerario_DoRa_EP_10"
+    },
+    {
+        "filename": "bugattich1r0n.safetensors",
+        "description": "bugattich1r0n"
+    },
+    {
+        "filename": "detailed_notrigger.safetensors",
+        "description": "detailed_notrigger"
+    },
+    {
+        "filename": "SDXLFaetastic_v24.safetensors",
+        "description": "SDXLFaetastic_v24"
+    }
+]

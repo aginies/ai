@@ -252,21 +252,25 @@
                     <option value="animagine-xl">Animagine XL</option>
                     <option value="dreamshaper">DreamShaper</option>
                     <option value="stablediffusion">Stable Diffusion</option>
-                    <option value="stable-diffusion-3-medium">Stable Diffusion 3 Medium</option>
                 </select>
             </div>
+<!--            <div class="row inline">
+                <label for="loramodels">Lora Models</label>
+                <select id="loramodels">
+                </select>
+            </div>
+   	    <div class="row inline"><button onclick="insertSelectedModel()">Insert</button>
+	    </div>
+		-->
+
             <div class="row inline">
-                <label for="size">Size</label>
-                <select id="size">
+                <label for="sizeSelect">Size</label>
+                <select id="sizeSelect">
                 </select>
             </div>
             <div class="row inline">
                 <label for="qualities">Qualities</label>
                 <select id="qualities">
-                    <option value="masterpiece">Masterpiece</option>
-                    <option value="best quality">Best Quality</option>
-                    <option value="very aesthetic">Very Aesthetic</option>
-                    <option value="absurdres">Absurdres</option>
                 </select>
             </div>
         </div>
@@ -330,28 +334,28 @@
         <div class="model-size-separator"></div>
 	<div class="options-container">
 		<div class="option">
-			<label for="styleSelect">Style</label>
-			<select id="styleSelect"></select>
+			<label for="styles">Styles</label>
+			<select id="styles"></select>
 		</div>
 		<div class="option">
-			<label for="shottypeSelect">Shot Type</label>
-			<select id="shottypeSelect"></select>
+			<label for="shot">Shot Type</label>
+			<select id="shot"></select>
 		</div>
 		<div class="option">
-			<label for="lightingSelect">Lighting</label>
-			<select id="lightingSelect"></select>
+			<label for="lighting">Lighting</label>
+			<select id="lighting"></select>
 		</div>
 		<div class="option">
-			<label for="contextSelect">Context</label>
-			<select id="contextSelect"></select>
+			<label for="context">Context</label>
+			<select id="context"></select>
 		</div>
 		<div class="option">
-			<label for="lensSelect">Lens</label>
-			<select id="lensSelect"></select>
+			<label for="lens">Lens</label>
+			<select id="lens"></select>
 		</div>
 		<div class="option">
-			<label for="deviceSelect">Device</label>
-			<select id="deviceSelect"></select>
+			<label for="device">Device</label>
+			<select id="device"></select>
 		</div>
 	</div>
         <!-- Positive Prompt -->
@@ -391,31 +395,25 @@
 
     </div>
     <script>
-	const styles = [ "None", "Hyperrealistic", "Impressionism", "Surrealism", "Expressionism", "Cubism", "Futurism", "Baroque", "Rococo", "Minimalism", "Oil Painting", "Watercolor", "Digital Art", "Pencil Sketch", "Charcoal Drawing", "Ink Illustration", "Collage", "3D Render", "Graffiti/Street Art", "Anime/Manga", "Cyberpunk", "Steampunk", "Fantasy Art", "Sci-Fi", "Retro/Vintage", "Noir", "Van Gogh", "Monet", "H.R. Giger", "Hayao Miyazaki", "Moebius", "Ethereal", "Gothic", "Bohemian", "Corporate Memphis", "Kawaii", "Abstract", "Pixel Art", "Tropical", "Desert", "Underwater", "Cosmic", "Portrait", "Landscape", "Macro", "Bokeh", "Black and White", "HDR", "Cinematic", "Dreamlike AI", "Generative Collage", "Dystopian Realism", "Vaporwave", "Wood" ];
-	const shottype = [ "None", "Close-up", "Extreme Close-up", "POV", "Medium shot", "Long shot", "Portrait", "Satellite", "Colorsplash", "Bokeh" ];
-	const lightingtype = [ "None", "Soft", "Ambient", "Ring", "Sun", "Cinematic", "Nostalgic", "Purple Neon", "Sun Rays"];
-	const contexttype = [ "None", "Indoor", "Outdoor", "At night", "In the park", "Studio", "sovietwave", "Post-Apocalyptic" ];
-	const lenstype = [ "None", "Wide-angle", "Telephoto", "24mm", "28mm", "35mm", "EF 70mm", "Macro", "Thermal", "Drone", "800mm" ];
-	const devicetype = [ "None", "iPhone X", "CCTV", "Nikon Z FX", "Canon", "GoPro" ];
-	// function to populate the select option
-	const populateSelect = (selectId, items) => {
-	      const selectElement = document.getElementById(selectId);
-	      items.forEach(item => {
-	        const option = document.createElement("option");
-	        option.value = item;
-	        option.textContent = item;
-	        selectElement.appendChild(option);
-	      });
-	};
-	populateSelect("styleSelect", styles);
-	populateSelect("shottypeSelect", shottype);
-	populateSelect("lightingSelect", lightingtype);
-	populateSelect("contextSelect", contexttype);
-	populateSelect("lensSelect", lenstype);
-	populateSelect("deviceSelect", devicetype);
+	fetch('config.json')
+		.then(response => response.json())
+		.then(config => {
+	        Object.keys(config).forEach(key => {
+	          const selectElement = document.getElementById(key);
+	          if (selectElement) {
+	            config[key].forEach(optionValue => {
+	              const option = document.createElement('option');
+	              option.value = optionValue;
+	              option.textContent = optionValue;
+	              selectElement.appendChild(option);
+	            });
+	          }
+	        });
+	      })
+	      .catch(error => console.error('Error loading config:', error));
 
         const modelSelect = document.getElementById('model');
-        const sizeSelect = document.getElementById('size');
+        const sizeSelect = document.getElementById('sizeSelect');
         const positiveHelp = document.getElementById('positive_help');
         const negativeHelp = document.getElementById('negative_help');
         const generateButton = document.getElementById('generate');
@@ -429,6 +427,22 @@
     	const body = document.body;
 	const darkModeToggle = document.getElementById('darkModeToggle');
 	const UHDToggle = document.getElementById('UHDToggle');
+
+	// read all Lora models
+	fetch('lora.json')
+		.then(response => response.json())
+		.then(data => {
+			const selectElement = document.getElementById('loramodels');
+			data.forEach(file => {
+				const option = document.createElement('option');
+				option.value = file.filename;
+				option.textContent = `${file.description}`;
+				selectElement.appendChild(option);
+			});
+		})
+	.catch(error => {
+	console.error('Error loading lora.json:', error);
+	});
 
 	// Enable dark mode by default
 	body.classList.add('dark-mode');
@@ -453,7 +467,7 @@
         const modelHelpTexts = {
             dreamshaper: {
                 positive: "Main subject with details, Secondary subjects, Background, Style Artists, Lighting Pose, perspective Adjectives",
-                negative: "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, bad anatomy, blurred, watermark, grainy, signature, cut off, draft, canvas frame, cartoon, weird colors, morbid, mutilated, extra fingers, mutated hands, cloned face, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, mutated hands, fused fingers, too many fingers, long neck "
+                negative: "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, bad anatomy, blurred, watermark, grainy, signature, cut off, draft, canvas frame, cartoon, weird colors, morbid, mutilated, extra fingers, mutated hands, cloned face, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, mutated hands, fused fingers, too many fingers, long neck"
             },
             stablediffusion: {
                 positive: "Main subject with details, Secondary subjects, Background, Style, Artists, Lighting Pose, perspective Adjectives",
@@ -465,10 +479,16 @@
             }
         };
 
+        function insertSelectedModel() {
+            var selectedModel = document.getElementById("loramodels").value;
+            var textarea = document.getElementById("positive_prompt");
+		textarea.value += "<lora:Lora/" + selectedModel + ":1>" + " "; // Adding a space after the model name (optional)
+        }
+
         function updateSizeOptions() {
             sizeSelect.innerHTML = "";
             const model = modelSelect.value;
-            const sizes = model === "animagine-xl" ? ["1344x768", "1216x832", "1024x1024", "1536x640"] : ["512x512", "1024x1024"];
+            const sizes = model === "animagine-xl" ? ["1344x768", "1216x832", "1024x1024", "1536x640", "512x512"] : ["512x512", "1024x1024", "1344x768", "1216x832"];
 
             sizes.forEach(size => {
                 const option = document.createElement('option');
@@ -486,8 +506,6 @@
 		document.getElementById('year-aesthetic-container').style.display = 'none';
             }
         });
-
-
 
         function updateHelpText() {
             const model = modelSelect.value;
@@ -515,23 +533,23 @@
             const f16 = document.getElementById('f16').value;
             const scale = document.getElementById('scale').value;
             const seedInput = document.getElementById('seed');
-	    const stylev = document.getElementById('styleSelect').value;
-	    const shottypev = document.getElementById('shottypeSelect').value;
-	    const lightingv = document.getElementById('lightingSelect').value;
-	    const contextv = document.getElementById('contextSelect').value;
-	    const lensv = document.getElementById('lensSelect').value;
-	    const devicev = document.getElementById('deviceSelect').value;
+	    const stylev = document.getElementById('styles').value;
+	    const shottypev = document.getElementById('shot').value;
+	    const lightingv = document.getElementById('lighting').value;
+	    const contextv = document.getElementById('context').value;
+	    const lensv = document.getElementById('lens').value;
+	    const devicev = document.getElementById('device').value;
             const sizeu = sizeSelect.value;
             const positivePrompt = document.getElementById('positive_prompt').value;
             const negativePrompt = document.getElementById('negative_prompt').value;
 	    const UHDcheckbox = document.getElementById('UHDToggle');
 	    const UHDv = UHDcheckbox.checked ? "8k, uhd, hdr" : "";
-            const quality = qualitiesSelect.value; // Get the selected quality
+            const qualityv = document.getElementById('qualities').value;
 	    const year = yearSelect.value;
 	    const seedValue = parseInt(seedInput.value, 10) || 0;
 
 	    const promptParts = [positivePrompt,];
-	    const tocheck = [ year, stylev, shottypev, lightingv, contextv, lensv, devicev, UHDv ];
+	    const tocheck = [ year, qualityv, stylev, shottypev, lightingv, contextv, lensv, devicev, UHDv ];
 	    tocheck.forEach((varValue) => {
 		 if (varValue && varValue !== "" && varValue !== "None") {
    		 	promptParts.push(varValue);

@@ -5,6 +5,7 @@ Easily deploy AI containers at home using containers.
 - [LocalAI web](https://github.com/mudler/LocalAI)
 - [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 - [stable-diffusion-webui-amdgpu](https://github.com/lshqqytiger/stable-diffusion-webui-amdgpu.git)
+- [ComfyUI](https://www.comfy.org/)
 
 # localai/docker-compose.yaml
 
@@ -13,11 +14,29 @@ LocalAI service will be available at [http://YOURIP:8080](http://YOURIP:8080)
 
 ## HowTo LocalAI
 
+Adjust the **docker-compose.yaml**
+
 ```bash
 cd localai
 docker compose build
 docker compose up
 ```
+
+# ComfyUI/docker-compose.yaml
+
+Create the container localAI for AMDGPU with rocm.
+ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188)
+
+## HowTo ComfyUI
+
+Adjust the **docker-compose.yaml**
+
+```bash
+cd localai
+docker compose build
+docker compose up
+```
+
 
 # stable-diffusion-webui/docker-compose.yaml
 
@@ -46,7 +65,11 @@ Debug the stable-diffusion-webui container:
 docker run -e LISTEN="" -e BUILD=debug -it stable-diffusion-webui:latest
 ```
 
-# imageai.html
+# Web page to generate Images
+
+config.json  generate_lora_json.py  imageai.html  lora.json  serverhttp.py
+
+## web/imageai.html
 
 Page to easily configure the creation of an AI Image.
 Open the script an adapt the url to you localAI server.
@@ -56,9 +79,17 @@ grep -n "const serverUrl" imageai.html
 398:   const serverUrl = 'http://10.0.1.38:8080';
 ```
 
+**web/config.json** file is used to set all parameters in the web page.
+
+## web/lora stuff
+
+- **web/lora.json** is used to populate the web page.
+- **generate_lora_json.py** is a script to generate the **lora.json** file from a directory will all the safetensors files
+
 ![image](https://github.com/aginies/ai/blob/774865c449736b9cef8f41f49cb5a3734fc5d060/images/imageai.jpg)
 
-# serverhttp.py
+
+# web/serverhttp.py
 
 Quick python http server to get the **imageai.html** available on a server.
 Create a directory, put the file in, launch the **serverhttp.py** script as a user.
@@ -72,7 +103,7 @@ python3.11 serverhttp.py
 
 # serverimage.py
 
-Quick server to show all the images by date creation on a page (port 8000)
+Quick server to show all the images by date creation on a page (port 8000). It support a modal display mode to quickly view all the images.
 
 ![image](https://github.com/aginies/ai/blob/c153a4708663c8cf66662107e2111da04ff7071e/images/serverimage.jpg)
 
