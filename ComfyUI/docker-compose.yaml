@@ -27,6 +27,9 @@ services:
       - /dev/dri
       - /dev/kfd
     volumes:
+      # models
       - /mnt/data/models:/ComfyUI/models:/models
-      - /home/aginies/Pictures/comfyui:/ComfyUI/output
-#      - /home/aginies/LocalAI/images:/stable-diffusion-webui/outputs/txt2img-images
+      # create images
+      - /home/aginies/comfyUI/output:/ComfyUI/output
+      # workflow path
+      - /home/aginies/comfyUI/my_workflows:/ComfyUI/my_workflows
