@@ -174,8 +174,7 @@ grep -n "const serverUrl" imageai.html
 398:   const serverUrl = 'http://10.0.1.38:8080';
 ```
 
-![image](https://github.com/aginies/ai/blob/774865c449736b9cef8f41f49cb5a3734fc5d060/images/imageai.jpg)
-
+![image](https://github.com/aginies/ai/blob/baf95ed9f6d0a1d9df64e20a64712e217ab23bdd/images/imageai.jpg)
 
 # stable-diffusion-webui/docker-compose.yaml
 
@@ -234,6 +233,9 @@ cd /home/aginies/comfyUI
 python3.11 server_gallery_images.py
 ```
 
+[](https://github.com/aginies/ai/blob/cc7a4c5963673830e3165cc1ca9ae2b4311a0b28/images/serverimage.jpg)
+
+
 ## systemd service
 
 **/etc/systemd/system/serverimage.service**:
@@ -263,7 +265,6 @@ sudo systemctl start serverimage.service
 sudo systemctl status serverimage.service
 ```
 
-![image](https://github.com/aginies/ai/blob/baf95ed9f6d0a1d9df64e20a64712e217ab23bdd/images/imageai.jpg)
 
 # External URL
 
