@@ -14,7 +14,7 @@ services:
     network_mode: host
     environment:
       # false, true, debug
-      - BUILD=debug
+      - BUILD=false
       # adjust to you AMD GPU or Nvidia
       # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
       - OPTIONS=--listen --use-pytorch-cross-attention
