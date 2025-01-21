@@ -11,7 +11,7 @@ Easily deploy containers to create AI images for AMD GPU.
 
 **⚠️ Warning:** Use this options with care, as this can lead to unstable system or domage your hardware!
 
-Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your value to get this applied to your system permanently.
+Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your values to get this applied to your system permanently.
 
 | Parameter | Value | Real |
 | :--------------- | :---: | :---: |
@@ -72,6 +72,57 @@ Adjust the volume in **docker-compose.yaml**:
 docker compose build
 docker compose up
 ```
+
+## Test some ComfyUI start options
+
+Modify the **docker-compose.yaml** file and set **BUILD** value to **debug**. Start the container:
+
+```bash
+docker compose up
+[+] Building 0.0s (0/0)                                                                   docker:default
+[+] Running 1/0
+ ✔ Container comfyui  Created                                                                       0.0s 
+Attaching to comfyui
+comfyui  | To Debug it:
+comfyui  | docker exec -it comfyui /bin/bash
+```
+
+Go inside the container and test some parameters:
+```
+docker exec -it comfyui /bin/bash
+export PYBIN=python3.11
+export SDW_DIR=/ComfyUI
+export DIR_TO_CHECK=${SDW_DIR}/venv
+source ${DIR_TO_CHECK}/bin/activate
+python3.11 main.py --help
+usage: main.py [-h] [--listen [IP]] [--port PORT] [--tls-keyfile TLS_KEYFILE]
+               [--tls-certfile TLS_CERTFILE] [--enable-cors-header [ORIGIN]]
+               [--max-upload-size MAX_UPLOAD_SIZE] [--extra-model-paths-config PATH [PATH ...]]
+               [--output-directory OUTPUT_DIRECTORY] [--temp-directory TEMP_DIRECTORY]
+               [--input-directory INPUT_DIRECTORY] [--auto-launch] [--disable-auto-launch]
+               [--cuda-device DEVICE_ID] [--cuda-malloc | --disable-cuda-malloc]
+               [--force-fp32 | --force-fp16]
+               [--fp32-unet | --fp64-unet | --bf16-unet | --fp16-unet | --fp8_e4m3fn-unet | --fp8_e5m2-unet]
+               [--fp16-vae | --fp32-vae | --bf16-vae] [--cpu-vae]
+               [--fp8_e4m3fn-text-enc | --fp8_e5m2-text-enc | --fp16-text-enc | --fp32-text-enc]
+               [--force-channels-last] [--directml [DIRECTML_DEVICE]]
+               [--oneapi-device-selector SELECTOR_STRING] [--disable-ipex-optimize]
+               [--preview-method [none,auto,latent2rgb,taesd]] [--preview-size PREVIEW_SIZE]
+               [--cache-classic | --cache-lru CACHE_LRU]
+               [--use-split-cross-attention | --use-quad-cross-attention | --use-pytorch-cross-attention | --use-sage-attention]
+               [--disable-xformers] [--force-upcast-attention | --dont-upcast-attention]
+               [--gpu-only | --highvram | --normalvram | --lowvram | --novram | --cpu]
+               [--reserve-vram RESERVE_VRAM] [--default-hashing-function {md5,sha1,sha256,sha512}]
+               [--disable-smart-memory] [--deterministic] [--fast] [--dont-print-server]
+               [--quick-test-for-ci] [--windows-standalone-build] [--disable-metadata]
+               [--disable-all-custom-nodes] [--multi-user]
+               [--verbose [{DEBUG,INFO,WARNING,ERROR,CRITICAL}]] [--log-stdout]
+               [--front-end-version FRONT_END_VERSION] [--front-end-root FRONT_END_ROOT]
+               [--user-directory USER_DIRECTORY]
+
+HSA_OVERRIDE_GFX_VERSION=11.0.0 PYTORCH_HIP_ALLOC_CONF=expandable_segments:True TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1 ${PYBIN} main.py --force-fp16 --preview-method auto --gpu-only
+```
+
 
 ## HowTo add custom_nodes with some python requirements
 
