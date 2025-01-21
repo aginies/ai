@@ -1,14 +1,10 @@
 #!/bin/bash
 # antoine@ginies.org
+# For AMD GPU !
 #set -exuo pipefail
 
-# https://localai.io/features/image-generation/#configuration-parameters
-# For AMD GPU skip CUDA test
 export ROCMV=6.2
-export HSA_OVERRIDE_GFX_VERSION=11.0.0
-export HIP_VISIBLE_DEVICES=0
 export PYBIN=python3.11
-
 export SDW_DIR=/ComfyUI
 export DIR_TO_CHECK=${SDW_DIR}/venv
 
@@ -17,7 +13,8 @@ start_server() {
 	echo "CCOMMANDLINE_ARGS:" ${OPTIONS}
 	cd ${SDW_DIR}
 	source ${DIR_TO_CHECK}/bin/activate
-	HSA_OVERRIDE_GFX_VERSION=11.0.0 ${PYBIN} main.py ${OPTIONS}
+	echo "HSA_OVERRIDE_GFX_VERSION=11.0.0 PYTORCH_HIP_ALLOC_CONF=expandable_segments:True TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1 ${PYBIN} main.py ${OPTIONS}"
+	HSA_OVERRIDE_GFX_VERSION=11.0.0 PYTORCH_HIP_ALLOC_CONF=expandable_segments:True TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1 ${PYBIN} main.py ${OPTIONS}
 }
 
 # Check BUILD

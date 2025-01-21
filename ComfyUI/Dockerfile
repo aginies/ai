@@ -40,15 +40,17 @@ RUN cd ComfyUI \
 	&& python3.11 -m venv venv \
 	&& source venv/bin/activate \
 	&& pip install --upgrade pip wheel \
-	&& pip3.11 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 \
+	&& pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 \
 	&& pip install -r requirements.txt \
-	&& cd custom_nodes \
-	&& git clone https://github.com/ltdrdata/ComfyUI-Manager comfyui-manager \
-	&& git clone https://github.com/romeobuilderotti/ComfyUI-PNG-Metadata ComfyUI-PNG-Metadata 
+	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/city96/ComfyUI_ExtraModels/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Fannovel16/comfyui_controlnet_aux/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/pythongosssss/ComfyUI-WD14-Tagger/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Stability-AI/stability-ComfyUI-nodes/refs/heads/master/requirements.txt
 
+# if you are not mount bind custom nodes, you can get clone them into the containers
+#	&& cd custom_nodes \
+#	&& git clone https://github.com/ltdrdata/ComfyUI-Manager comfyui-manager \
+#	&& git clone https://github.com/romeobuilderotti/ComfyUI-PNG-Metadata ComfyUI-PNG-Metadata \
+#	&& git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git \
+#	&& git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
 
-#	&& HSA_OVERRIDE_GFX_VERSION=11.0.0 python3.11 main.py
-#	&& TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1 python main.py --use-pytorch-cross-attention
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
