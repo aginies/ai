@@ -38,7 +38,8 @@ docker compose up
 
 ## HowTo add custom_nodes with some python requirements
 
-comfyUI as a lot of **custome_nodes** available, some needs some python requirements. You need to update the **pip install** command at the end of the **ComfyUI/Dockerfile** file to get them ready in the container.
+A lot of **custome_nodes** are available, some needs some python requirements. You need to update the **pip install** command at the end of the **ComfyUI/Dockerfile** file to get them ready in the container.
+
 
 ```
 RUN cd ComfyUI \
@@ -51,6 +52,8 @@ RUN cd ComfyUI \
 	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt \
  -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r YOURREQUIREMENTSFILE
 ```
+
+PS: You need to rebuild your container.
 
 # localai/docker-compose.yaml
 
