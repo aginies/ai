@@ -1,11 +1,40 @@
 # Goal
 
-Easily deploy AI containers at home using containers.
+Easily deploy containers to create AI images for AMD GPU.
 
+- The best one is: [ComfyUI](https://www.comfy.org/)
 - [LocalAI web](https://github.com/mudler/LocalAI)
 - [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 - [stable-diffusion-webui-amdgpu](https://github.com/lshqqytiger/stable-diffusion-webui-amdgpu.git)
-- [ComfyUI](https://www.comfy.org/)
+
+# ComfyUI/docker-compose.yaml
+
+Create the container localAI for AMDGPU with rocm.
+ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188).
+**models**, **custom nodes**, **created images** and **workflow** should be stored
+outside of the containers. So check the volume in **docker-compose.yaml** file.
+
+## HowTo ComfyUI
+
+Adjust the volume in **docker-compose.yaml**:
+```docker
+    volumes:
+      # models
+      - /mnt/data/models:/ComfyUI/models
+      # create images
+      - /home/aginies/comfyUI/output:/ComfyUI/output
+      # workflow path
+      - /home/aginies/comfyUI/my_workflows:/ComfyUI/my_workflows
+      # custom nodes
+      - /home/aginies/comfyUI/custom_nodes:/ComfyUI/custom_nodes
+      # settings
+      - /home/aginies/comfy.settings.json:/ComfyUI/user/default/comfy.settings.json
+```
+
+```bash
+docker compose build
+docker compose up
+```
 
 # localai/docker-compose.yaml
 
@@ -22,20 +51,6 @@ docker compose build
 docker compose up
 ```
 
-# ComfyUI/docker-compose.yaml
-
-Create the container localAI for AMDGPU with rocm.
-ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188)
-
-## HowTo ComfyUI
-
-Adjust the **docker-compose.yaml**
-
-```bash
-cd localai
-docker compose build
-docker compose up
-```
 
 
 # stable-diffusion-webui/docker-compose.yaml
