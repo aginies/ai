@@ -206,19 +206,62 @@ docker run -e LISTEN="" -e BUILD=debug -it stable-diffusion-webui:latest
 
 # web/serverhttp.py
 
-Quick python http server to get the **imageai.html** available on a server.
+Quick python http server to get the **imageai.html** available on a web page.
 Create a directory, put the file in, launch the **serverhttp.py** script as a user.
 Default port is **8081**.
 
 ```bash
 mkdir ai
 cp imageai.html ai/
+cd ai
 python3.11 serverhttp.py
 ```
 
-# serverimage.py
+# server_gallery_images.py
 
-Quick server to show all the images by date creation on a page (port 8000). It supports a modal display mode to quickly view all the images.
+Quick python http server to show all the images by date creation on a web page (port 8000). It supports a modal display mode to quickly view all the images.
+
+## ComfyUI
+
+Adjust the **IMAGES_DIR** var to your path:
+```
+IMAGES_DIR = "/home/aginies/comfyUI/output"
+```
+
+```bash
+cp server_gallery_images.py /home/aginies/comfyUI/
+cd /home/aginies/comfyUI
+python3.11 server_gallery_images.py
+```
+
+## systemd service
+
+**/etc/systemd/system/serverimage.service**:
+```systemd
+[Unit]
+Description=Images Gallery
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3.11 /home/aginies/comfyUI/server_gallery_images.py
+WorkingDirectory=/home/aginies/comfyUI
+User=root
+Group=root
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable it now and at boot:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable serverimage.service --now
+sudo systemctl start serverimage.service
+sudo systemctl status serverimage.service
+```
 
 ![image](https://github.com/aginies/ai/blob/baf95ed9f6d0a1d9df64e20a64712e217ab23bdd/images/imageai.jpg)
 

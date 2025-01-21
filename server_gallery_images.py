@@ -8,7 +8,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 # Directory to watch
-IMAGES_DIR = "/home/aginies/LocalAI/images"
+IMAGES_DIR = "/home/aginies/comfyUI/output"
 THUMB_SIZE = 200  # Parameter for thumbnail size in pixels
 IMAGES_PER_PAGE = 100  # Number of images per page
 
@@ -229,9 +229,10 @@ HTML_TEMPLATE = """
 
 # Generate the HTML file based on the current images in the directory and page number
 def generate_html(page=1):
+    base_url_path = os.path.basename(IMAGES_DIR)
     all_images = [
         {
-            "path": f"/images/{img}",
+            "path": f"{base_url_path}/{img}",  # Use the direct path
             "name": img,
             "mtime": os.path.getmtime(os.path.join(IMAGES_DIR, img))
         }
