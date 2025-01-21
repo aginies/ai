@@ -8,7 +8,7 @@ Easily deploy containers to create AI images for AMD GPU.
 | [LocalAI web](https://github.com/mudler/LocalAI) | 109Gb | Easy to deploy and include other AI stuff |  Limited for the image part |
 | [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 23.9Gb | Lot of capabilities | Limited and UI layout is confusing |
 
-I recommends to use [ComfyUI](https://www.comfy.org/) as the interface is really powerfull and there is tons of capabilies.
+I recommend to use [ComfyUI](https://www.comfy.org/) as the interface is really powerfull and there is tons of capabilies.
 
 # Tweak GPU cards
 
