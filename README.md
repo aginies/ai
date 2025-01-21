@@ -16,14 +16,8 @@ Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is som
 | Parameter | Value | Real |
 | :--------------- | :---: | :---: |
 | Max Power | 300000000 | 300W |
-
-
-
-| Parameter | Value | Real | 
-| -------------- | -------------- |
-| Max power | 300000000 | 300W |
-| Memory Clock | 1350 | 1350 MHz |
-| GPU Clock| 2900 | 2900MHz |
+| Memory Clock | 1350 | 1350MHz |
+| GPU Clock | 2900 | 2900MHz |
 
 ```systemd
 [Unit]
