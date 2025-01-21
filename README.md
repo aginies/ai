@@ -233,7 +233,7 @@ cd /home/aginies/comfyUI
 python3.11 server_gallery_images.py
 ```
 
-[](https://github.com/aginies/ai/blob/cc7a4c5963673830e3165cc1ca9ae2b4311a0b28/images/serverimage.jpg)
+![image](https://github.com/aginies/ai/blob/cc7a4c5963673830e3165cc1ca9ae2b4311a0b28/images/serverimage.jpg)
 
 
 ## systemd service
