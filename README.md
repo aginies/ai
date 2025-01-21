@@ -1,20 +1,22 @@
 # Goal
 
-Easily deploy containers to create AI images for AMD GPU.
+Easily deploy containers to create AI images for **AMD GPU**. This should be possible to get it work for Nvidia card, but you need to adjust the **Dockerfile** and probably also **docker-compose.yaml**.
 
-| Project | Container size | Advantages | Drawbacks | 
-| :--------------- | :---: | :---: |:---: |
-| [ComfyUI](https://www.comfy.org/) | 26Gb | Huge customisation possible, no limit | Could be complex as there is a lot of custom_nodes available |
-| [LocalAI web](https://github.com/mudler/LocalAI) | 109Gb | Easy to deploy and include other AI stuff |  Limited for the image part |
-| [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 23.9Gb | Lot of capabilities | Limited and UI layout is confusing |
+| Project | Container size | OS | Advantages | Drawbacks | 
+| :--------------- | :---: | :---: |:---: | :---: |
+| [ComfyUI](https://www.comfy.org/) | 26Gb  | Leap15.6 | Huge customisation possible, no limit | Could be complex as there is a lot of custom_nodes available |
+| [LocalAI web](https://github.com/mudler/LocalAI) | 109Gb | Ubuntu | Easy to deploy and include other AI stuff |  Limited for the image part |
+| [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 23.9Gb | Leap15.6 | Lot of capabilities | Limited and UI layout is confusing |
 
 I recommend to use [ComfyUI](https://www.comfy.org/) as the interface is really powerfull and there is tons of capabilies.
 
-# Tweak GPU cards
+# Tweak AMD GPU card
+
+You need to install [AMD GPU](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/amdgpu-install.html#suse-linux-enterprise) to get the kernel module from AMD, this will Dkms rebuild the module.
+
+At home I have a Radeon Merc310 7900XT, I tweak it a bit to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your values to get this applied to your system permanently.
 
 **⚠️ Warning:** Use this options with care, as this can lead to unstable system or domage your hardware!
-
-Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your values to get this applied to your system permanently.
 
 | Parameter | Value | Real |
 | :--------------- | :---: | :---: |
