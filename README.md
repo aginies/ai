@@ -13,6 +13,12 @@ Easily deploy containers to create AI images for AMD GPU.
 
 Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your value to get this applied to your system permanently.
 
+| Parameter | Value | Real |
+| :--------------- | :---: | :---: |
+| Max Power | 300000000 | 300W |
+
+
+
 | Parameter | Value | Real | 
 | -------------- | -------------- |
 | Max power | 300000000 | 300W |
