@@ -36,6 +36,22 @@ docker compose build
 docker compose up
 ```
 
+## HowTo add custom_nodes with some python requirements
+
+comfyUI as a lot of **custome_nodes** available, some needs some python requirements. You need to update the **pip install** command at the end of the **ComfyUI/Dockerfile** file to get them ready in the container.
+
+```
+RUN cd ComfyUI \
+	&& python3.11 -m venv venv \
+	&& source venv/bin/activate \
+	&& pip install --upgrade pip wheel \
+	&& pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 
+\
+	&& pip install -r requirements.txt \
+	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt \
+ -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r YOURREQUIREMENTSFILE
+```
+
 # localai/docker-compose.yaml
 
 Create the container localAI for AMDGPU with rocm.
@@ -51,6 +67,19 @@ docker compose build
 docker compose up
 ```
 
+## Improved  Web page to generate Images
+
+### web/imageai.html
+
+Page to easily configure the creation of an AI Image.
+Open the script an adapt the url to you localAI server.
+
+```bash
+grep -n "const serverUrl" imageai.html 
+398:   const serverUrl = 'http://10.0.1.38:8080';
+```
+
+![image](https://github.com/aginies/ai/blob/774865c449736b9cef8f41f49cb5a3734fc5d060/images/imageai.jpg)
 
 
 # stable-diffusion-webui/docker-compose.yaml
@@ -79,30 +108,6 @@ Debug the stable-diffusion-webui container:
 ```
 docker run -e LISTEN="" -e BUILD=debug -it stable-diffusion-webui:latest
 ```
-
-# Web page to generate Images
-
-config.json  generate_lora_json.py  imageai.html  lora.json  serverhttp.py
-
-## web/imageai.html
-
-Page to easily configure the creation of an AI Image.
-Open the script an adapt the url to you localAI server.
-
-```bash
-grep -n "const serverUrl" imageai.html 
-398:   const serverUrl = 'http://10.0.1.38:8080';
-```
-
-**web/config.json** file is used to set all parameters in the web page.
-
-## web/lora stuff
-
-- **web/lora.json** is used to populate the web page.
-- **generate_lora_json.py** is a script to generate the **lora.json** file from a directory will all the safetensors files
-
-![image](https://github.com/aginies/ai/blob/774865c449736b9cef8f41f49cb5a3734fc5d060/images/imageai.jpg)
-
 
 # web/serverhttp.py
 
