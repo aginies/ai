@@ -2,7 +2,7 @@
 
 Easily deploy containers to create AI images for AMD GPU.
 
-| Project | Size | Advantages | Drawbacks | 
+| Project | Container size | Advantages | Drawbacks | 
 | :--------------- | :---: | :---: |:---: |
 | [ComfyUI](https://www.comfy.org/) | 26Gb | Huge customisation possible, no limit | Could be complex as there is a lot of custom_nodes available |
 | [LocalAI web](https://github.com/mudler/LocalAI) | 109Gb | Easy to deploy and include other AI stuff |  Limited for the image part |
