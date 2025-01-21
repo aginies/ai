@@ -7,6 +7,43 @@ Easily deploy containers to create AI images for AMD GPU.
 - [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 - [stable-diffusion-webui-amdgpu](https://github.com/lshqqytiger/stable-diffusion-webui-amdgpu.git)
 
+# Tweak GPU cards
+
+**⚠️ Warning:** Use this options with care, as this can lead to unstable system or domage your hardware!
+
+Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your value to get this applied to your system permanently.
+
+| Parameter | Value | Real | 
+|:--------------|:--------------|
+| Max power | 300000000 | 300W |
+| Memory Clock | 1350 | 1350 MHz |
+| GPU Clock| 2900 | 2900MHz |
+
+```systemd
+[Unit]
+Description=Set GPU power cap and clock
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "echo 300000000 > /sys/class/drm/card0/device/hwmon/hwmon1/power1_cap"
+ExecStart=/bin/bash -c "echo 'm 1 1350' > /sys/class/drm/card0/device/pp_od_clk_voltage"
+ExecStart=/bin/bash -c "echo 's 1 2900' | sudo tee /sys/class/drm/card0/device/pp_od_clk_voltage"
+ExecStart=/bin/bash -c "echo c > /sys/class/drm/card0/device/pp_od_clk_voltage"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable it now and at boot:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable set-power-cap.service --now
+sudo systemctl start set-power-cap.service
+sudo systemctl status set-power-cap.service
+```
+
 # ComfyUI/docker-compose.yaml
 
 Create the container localAI for AMDGPU with rocm.
