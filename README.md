@@ -14,7 +14,7 @@ Easily deploy containers to create AI images for AMD GPU.
 Got a Radeon Merc310 7900XT, I tweak it to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your value to get this applied to your system permanently.
 
 | Parameter | Value | Real | 
-|:--------------|:--------------|
+| -------------- | -------------- |
 | Max power | 300000000 | 300W |
 | Memory Clock | 1350 | 1350 MHz |
 | GPU Clock| 2900 | 2900MHz |
@@ -163,9 +163,9 @@ python3.11 serverhttp.py
 
 # serverimage.py
 
-Quick server to show all the images by date creation on a page (port 8000). It support a modal display mode to quickly view all the images.
+Quick server to show all the images by date creation on a page (port 8000). It supports a modal display mode to quickly view all the images.
 
-![image](https://github.com/aginies/ai/blob/c153a4708663c8cf66662107e2111da04ff7071e/images/serverimage.jpg)
+![image](https://github.com/aginies/ai/blob/baf95ed9f6d0a1d9df64e20a64712e217ab23bdd/images/imageai.jpg)
 
 # External URL
 
