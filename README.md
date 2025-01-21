@@ -94,6 +94,7 @@ export PYBIN=python3.11
 export SDW_DIR=/ComfyUI
 export DIR_TO_CHECK=${SDW_DIR}/venv
 source ${DIR_TO_CHECK}/bin/activate
+cd ${SDW_DIR}
 python3.11 main.py --help
 usage: main.py [-h] [--listen [IP]] [--port PORT] [--tls-keyfile TLS_KEYFILE]
                [--tls-certfile TLS_CERTFILE] [--enable-cors-header [ORIGIN]]
