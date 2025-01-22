@@ -128,9 +128,66 @@ HTML_TEMPLATE = """
             max-height: 90%;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(1);
             object-fit: contain;
+            transition: transform 0.2s ease-in-out; /* Smooth zoom transitions */
+            cursor: grab; /* Optional: Add a grab cursor for better UX */
+
+        .help-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Dark transparent background */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100; /* Ensure it appears above everything else in the modal */
+        }
+
+        .help-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #222; /* Slightly lighter background for content */
+            border-radius: 10px;
+        }
+
+        .help-content h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .help-content ul {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            list-style-type: disc;
+            list-style-position: inside;
+        }
+
+        .help-content li {
+            margin: 10px 0;
+        }
+
+        .close-help-button {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .close-help-button:hover {
+            background-color: #ff6666; /* Slightly lighter red on hover */
+        }
     </style>
+
 </head>
 <body>
     <h1 style="text-align:center;">AI Generated Images Gallery</h1>
@@ -162,6 +219,18 @@ HTML_TEMPLATE = """
         <span class="nav prev" onclick="prevImage()">&#10094;</span>
         <span class="nav next" onclick="nextImage()">&#10095;</span>
         <img id="modalImage" src="" alt="">
+
+    <div class="help-overlay" id="helpOverlay">
+        <div class="help-content">
+            <h2>How to Use</h2>
+            <ul>
+                <li><strong>Zoom:</strong> Use the mouse wheel to zoom in and out.</li>
+                <li><strong>Pan:</strong> Click and drag the image to move it around.</li>
+                <li><strong>Close Modal:</strong> Press <kbd>Esc</kbd> or click the <strong>&times;</strong> button.</li>
+            </ul>
+            <button class="close-help-button" onclick="hideHelp()">Close Help</button>
+        </div>
+    </div>
     </div>
 
     <script>
@@ -192,12 +261,86 @@ HTML_TEMPLATE = """
             const modalImage = document.getElementById('modalImage');
             modal.style.display = 'block';
             modalImage.src = images[currentIndex].path;
+            showHelp();
         }
 
         function closeModal() {
             const modal = document.getElementById('imageModal');
             modal.style.display = 'none';
+            zoomLevel = 1;
+            translateX = 0;
+            translateY = 0;
+            modalImage.style.transform = 'translate(0, 0) scale(1)';
         }
+
+        let zoomLevel = 1;
+
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+
+    function zoomImage(event) {
+        event.preventDefault();
+
+        const modalImage = document.getElementById('modalImage');
+        const rect = modalImage.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const prevZoomLevel = zoomLevel;
+
+        if (event.deltaY < 0) {
+            zoomLevel = Math.min(zoomLevel + 0.1, 4);
+        } else {
+            zoomLevel = Math.max(zoomLevel - 0.1, 1);
+        }
+
+        translateX += (offsetX / rect.width) * (1 - prevZoomLevel / zoomLevel) * rect.width;
+        translateY += (offsetY / rect.height) * (1 - prevZoomLevel / zoomLevel) * rect.height;
+        modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+    }
+
+    function startDragging(event) {
+        isDragging = true;
+        startX = event.clientX; // Record the starting X position
+        startY = event.clientY; // Record the starting Y position
+        document.body.style.cursor = "grabbing"; // Change cursor to grabbing
+    }
+
+    function stopDragging() {
+        isDragging = false;
+        document.body.style.cursor = "default"; // Reset cursor
+    }
+
+    function dragImage(event) {
+        if (!isDragging) return;
+        const deltaX = event.clientX - startX;
+        const deltaY = event.clientY - startY;
+        translateX += deltaX;
+        translateY += deltaY;
+        startX = event.clientX;
+        startY = event.clientY;
+
+        const modalImage = document.getElementById('modalImage');
+        modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+    }
+
+    const modalImage = document.getElementById('modalImage');
+    modalImage.addEventListener('wheel', zoomImage); // Handle zooming
+    modalImage.addEventListener('mousedown', startDragging); // Start dragging
+    document.addEventListener('mouseup', stopDragging); // Stop dragging
+    document.addEventListener('mousemove', dragImage); // Handle dragging
+
+    function showHelp() {
+        const helpOverlay = document.getElementById('helpOverlay');
+        helpOverlay.style.display = 'flex'; // Show the help overlay
+    }
+
+    function hideHelp() {
+        const helpOverlay = document.getElementById('helpOverlay');
+        helpOverlay.style.display = 'none'; // Hide the help overlay
+    }
 
         function prevImage() {
             if (currentIndex > 0) {
@@ -232,7 +375,8 @@ HTML_TEMPLATE = """
 """
 
 # Generate the HTML file based on the current images in the directory and page number
-def generate_html(page=1):
+
+def load_images():
     base_url_path = os.path.basename(IMAGES_DIR)
     all_images = []
     for img in os.listdir(IMAGES_DIR):
@@ -253,6 +397,7 @@ def generate_html(page=1):
                     "resolution": f"{width}x{height}"  # Add resolution as "WIDTHxHEIGHT"
                 })
 
+def generate_html(page=1):
     all_images.sort(key=lambda x: x["mtime"], reverse=True)  # Sort by modification time, descending
 
     total_pages = (len(all_images) + IMAGES_PER_PAGE - 1) // IMAGES_PER_PAGE  # Ceiling division
@@ -302,6 +447,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
                     self.send_response(200)
                     self.end_headers()
                     return
+
         self.send_response(400)
         self.end_headers()
 
@@ -309,6 +455,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
 class ImageChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         if event.event_type in ["created", "deleted", "modified"]:
+            load_images()
             generate_html()  # Regenerate HTML for page 1
 
 # HTTP server in a thread
@@ -333,6 +480,7 @@ class ServerThread(threading.Thread):
 # Main program
 if __name__ == "__main__":
     # Ensure the HTML is up-to-date at the start
+    load_images()
     generate_html()
 
     # Start the HTTP server in a separate thread
