@@ -6,6 +6,7 @@ from jinja2 import Template
 from urllib.parse import urlparse, parse_qs
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from PIL import Image
 
 # Directory to watch
 IMAGES_DIR = "/home/aginies/comfyUI/output"
@@ -138,7 +139,10 @@ HTML_TEMPLATE = """
         <div class="gallery-item">
             <img src="{{ image.path }}" alt="{{ image.name }}" onclick="openModal({{ loop.index0 }})">
             <span>{{ image.name }}</span>
-            <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
+                <span style="margin-right: 35px; font-size: 14px;">{{ image.resolution }}</span> <!-- Resolution info -->
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -230,15 +234,25 @@ HTML_TEMPLATE = """
 # Generate the HTML file based on the current images in the directory and page number
 def generate_html(page=1):
     base_url_path = os.path.basename(IMAGES_DIR)
-    all_images = [
-        {
-            "path": f"{base_url_path}/{img}",  # Use the direct path
-            "name": img,
-            "mtime": os.path.getmtime(os.path.join(IMAGES_DIR, img))
-        }
-        for img in os.listdir(IMAGES_DIR)
-        if img.lower().endswith((".png", ".jpg", ".jpeg", ".gif")) and os.path.getsize(os.path.join(IMAGES_DIR, img)) > 0
-    ]
+    all_images = []
+    for img in os.listdir(IMAGES_DIR):
+        if img.lower().endswith((".png", ".jpg", ".jpeg", ".gif")):
+            image_path = os.path.join(IMAGES_DIR, img)
+            if os.path.getsize(image_path) > 0:
+                try:
+                    with Image.open(image_path) as img_obj:
+                        width, height = img_obj.size  # Get resolution
+                except Exception as e:
+                    print(f"Error processing image {img}: {e}")
+                    width, height = 0, 0  # Default to 0 if unable to get dimensions
+
+                all_images.append({
+                    "path": f"/{base_url_path}/{img}",
+                    "name": img,
+                    "mtime": os.path.getmtime(image_path),
+                    "resolution": f"{width}x{height}"  # Add resolution as "WIDTHxHEIGHT"
+                })
+
     all_images.sort(key=lambda x: x["mtime"], reverse=True)  # Sort by modification time, descending
 
     total_pages = (len(all_images) + IMAGES_PER_PAGE - 1) // IMAGES_PER_PAGE  # Ceiling division
