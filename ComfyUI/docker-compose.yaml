@@ -17,6 +17,7 @@ services:
       - BUILD=false
       # adjust to you AMD GPU or Nvidia
       # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
+      # zluda: https://github.com/vosen/ZLUDA
       - OPTIONS=--listen --use-pytorch-cross-attention
     ports:
       - "8188:8188"
