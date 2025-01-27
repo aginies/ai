@@ -186,8 +186,8 @@ HTML_TEMPLATE = """
         .close-help-button:hover {
             background-color: #ff6666; /* Slightly lighter red on hover */
         }
-    </style>
 
+    </style>
 </head>
 <body>
     <h1 style="text-align:center;">AI Generated Images Gallery</h1>
@@ -197,8 +197,8 @@ HTML_TEMPLATE = """
             <img src="{{ image.path }}" alt="{{ image.name }}" onclick="openModal({{ loop.index0 }})">
             <span>{{ image.name }}</span>
             <div style="display: flex; align-items: center; justify-content: space-between;">
-                <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
-                <span style="margin-right: 35px; font-size: 14px;">{{ image.resolution }}</span> <!-- Resolution info -->
+            <button class="delete-button" onclick="deleteImage('{{ image.name }}')">Delete</button>
+            <span style="margin-right: 35px; font-size: 14px;">{{ image.resolution }}</span> <!-- Resolution info -->
             </div>
         </div>
         {% endfor %}
@@ -219,7 +219,6 @@ HTML_TEMPLATE = """
         <span class="nav prev" onclick="prevImage()">&#10094;</span>
         <span class="nav next" onclick="nextImage()">&#10095;</span>
         <img id="modalImage" src="" alt="">
-
     <div class="help-overlay" id="helpOverlay">
         <div class="help-content">
             <h2>How to Use</h2>
@@ -236,6 +235,7 @@ HTML_TEMPLATE = """
     <script>
         let images = {{ images | tojson }};
         let currentIndex = 0;
+
         document.addEventListener('keydown', function(event) {
             const modal = document.getElementById('imageModal');
             if (modal.style.display === 'block') { // Check if modal is open
@@ -272,9 +272,7 @@ HTML_TEMPLATE = """
             translateY = 0;
             modalImage.style.transform = 'translate(0, 0) scale(1)';
         }
-
         let zoomLevel = 1;
-
         let translateX = 0;
         let translateY = 0;
         let isDragging = false;
@@ -375,8 +373,7 @@ HTML_TEMPLATE = """
 """
 
 # Generate the HTML file based on the current images in the directory and page number
-
-def load_images():
+def generate_html(page=1):
     base_url_path = os.path.basename(IMAGES_DIR)
     all_images = []
     for img in os.listdir(IMAGES_DIR):
@@ -397,7 +394,6 @@ def load_images():
                     "resolution": f"{width}x{height}"  # Add resolution as "WIDTHxHEIGHT"
                 })
 
-def generate_html(page=1):
     all_images.sort(key=lambda x: x["mtime"], reverse=True)  # Sort by modification time, descending
 
     total_pages = (len(all_images) + IMAGES_PER_PAGE - 1) // IMAGES_PER_PAGE  # Ceiling division
@@ -447,7 +443,6 @@ class CustomHandler(SimpleHTTPRequestHandler):
                     self.send_response(200)
                     self.end_headers()
                     return
-
         self.send_response(400)
         self.end_headers()
 
@@ -455,7 +450,6 @@ class CustomHandler(SimpleHTTPRequestHandler):
 class ImageChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         if event.event_type in ["created", "deleted", "modified"]:
-            load_images()
             generate_html()  # Regenerate HTML for page 1
 
 # HTTP server in a thread
@@ -480,7 +474,6 @@ class ServerThread(threading.Thread):
 # Main program
 if __name__ == "__main__":
     # Ensure the HTML is up-to-date at the start
-    load_images()
     generate_html()
 
     # Start the HTTP server in a separate thread
