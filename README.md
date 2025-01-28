@@ -57,7 +57,7 @@ Prepare docker, you need to install [container-toolkit](https://docs.nvidia.com/
 # ComfyUI container
 
 ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188) as the option **--listen** is enable.
-[models](##models), **custom nodes**, **created images** and **workflow** should be stored
+[models](#models), **custom nodes**, **created images** and **workflow** should be stored
 outside of the containers. So check the volume in **docker-compose.yaml** [config](## HowTo-configure-ComfyUI).
 
 By default this container will be prepared for some **custom_nodes** requirements, but you need to clone it into your home directory to get them available. Check the **volume**
