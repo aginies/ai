@@ -56,9 +56,9 @@ Prepare docker, you need to install [container-toolkit](https://docs.nvidia.com/
 
 # ComfyUI container
 
-ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188) as the option **--listen is enable**.
-**models**, **custom nodes**, **created images** and **workflow** should be stored
-outside of the containers. So check the volume in **docker-compose.yaml** file.
+ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188) as the option **--listen** is enable.
+[models](##models), **custom nodes**, **created images** and **workflow** should be stored
+outside of the containers. So check the volume in **docker-compose.yaml** [config](## HowTo-configure-ComfyUI).
 
 By default this container will be prepared for some **custom_nodes** requirements, but you need to clone it into your home directory to get them available. Check the **volume**
 directory in the **docker-compose.yaml** file.
@@ -73,11 +73,13 @@ directory in the **docker-compose.yaml** file.
 ## ComfyUI_AMD/docker-compose.yaml
 
 Create the container ComfyUI for **AMDGPU / rocm**.
-It will use Rocm 6.3 development release. You can use a stable one like 6.2, change the **pip install** in the **Dockerfile** to something like:
+It will use Rocm 6.3 development release. You can use a stable one like 6.2, change the line which contains **rocm6.3** in the **Dockerfile** to something like:
 
 ```dockerfile
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.2
 ```
+
+Also you need to adjust the **GFX** var in the **docker-compose.yaml** to your [card](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html)
 
 ## ComfyUI_NVIDIA/docker-compose.yaml
 
@@ -296,17 +298,19 @@ sudo systemctl status serverimage.service
 
 # External URL
 
-LocalAI and rocm:
+## LocalAI
 - [localAI](https://localai.io/)
+
+## Rocm
 - [rocm AMD Doc](https://rocm.docs.amd.com/en/docs-6.2.4/index.html)
 
-stable-diffusion-webui:
+## stable-diffusion-webui
 - [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 - [stable-diffusion-webui-amdgpu](https://github.com/lshqqytiger/stable-diffusion-webui-amdgpu.git)
 
-Models:
+## models
 - [huggingface.co](https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending)
 - [civitai.co](https://civitai.com/models)
 
-External Doc:
+## SUSE Doc
 - [SUSE Generating Images](https://www.suse.com/c/generating-images-with-localai-using-a-gpu/)
