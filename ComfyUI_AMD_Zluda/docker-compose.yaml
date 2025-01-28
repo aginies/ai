@@ -1,0 +1,35 @@
+# docker-compose.yaml
+# antoine@ginies.org
+#version: '3.8'
+
+services:
+  api:
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: comfyui
+    container_name: comfyui-amd-zluda
+    network_mode: host
+    environment:
+      # false, debug
+      - BUILD=false
+      # AMD Zluda: https://github.com/vosen/ZLUDA
+      - GPU=AMDZLUDA
+      - OPTIONS=--listen --use-pytorch-cross-attention
+    ports:
+      - "8188:8188"
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    volumes:
+      # models
+      - /mnt/data/models:/ComfyUI/models
+      # create images
+      - /home/aginies/comfyUI/output:/ComfyUI/output
+      # workflow path
+      - /home/aginies/comfyUI/my_workflows:/ComfyUI/my_workflows
+      # custom nodes
+      - /home/aginies/comfyUI/custom_nodes:/ComfyUI/custom_nodes
+      # settings
+      - /home/aginies/comfyUI/comfy.settings.json:/ComfyUI/user/default/comfy.settings.json

@@ -8,9 +8,9 @@ FROM registry.opensuse.org/opensuse/leap:15.6
 # Mandatory labels for the build service:
 #   https://en.opensuse.org/Building_derived_containers
 # labelprefix=%%LABELPREFIX%%
-LABEL Description="comfyui Container"
-LABEL org.opencontainers.image.title="comfyui container"
-LABEL org.opencontainers.image.description="Container for comfyui"
+LABEL Description="ComfyUI AMD Container"
+LABEL org.opencontainers.image.title="ComfyUI AMD container"
+LABEL org.opencontainers.image.description="Container for ComfyUI AMD"
 LABEL org.opencontainers.image.created="%BUILDTIME%"
 LABEL org.opencontainers.image.version="%%PKG_VERSION%%.%RELEASE%"
 LABEL org.openbuildservice.disturl="%DISTURL%"
@@ -31,9 +31,6 @@ RUN zypper install --no-recommends -y \
 	python311-aiosqlite \
 	libtcmalloc4 \
 	libglvnd \
-	wget \
-	tar \
-	gzip \
 	libgthread-2_0-0 
 
 # Grab comfyui and clone needed repo in the container
@@ -45,11 +42,7 @@ RUN cd ComfyUI \
 	&& pip install --upgrade pip wheel \
 	&& pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.3 \
 	&& pip install -r requirements.txt \
-	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/city96/ComfyUI_ExtraModels/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Fannovel16/comfyui_controlnet_aux/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/pythongosssss/ComfyUI-WD14-Tagger/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Stability-AI/stability-ComfyUI-nodes/refs/heads/master/requirements.txt \
-	&& cd /usr/lib64/ \
-	&& wget https://github.com/vosen/ZLUDA/releases/download/v4/zluda-4-linux.tar.gz \
-	&& tar xvfz zluda-4-linux.tar.gz \
-	&& echo "/usr/lib64/zluda" > /etc/ld.so.conf.d/30-zluda.conf
+	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/city96/ComfyUI_ExtraModels/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Fannovel16/comfyui_controlnet_aux/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/pythongosssss/ComfyUI-WD14-Tagger/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Stability-AI/stability-ComfyUI-nodes/refs/heads/master/requirements.txt
 
 #	&& pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 \
 # if you are not mount bind custom nodes, you can get clone them into the containers

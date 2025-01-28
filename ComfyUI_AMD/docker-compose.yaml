@@ -1,6 +1,5 @@
 # docker-compose.yaml
 # antoine@ginies.org
-# Prepare for AMDGPU!
 #version: '3.8'
 
 services:
@@ -10,14 +9,13 @@ services:
       context: .
       dockerfile: Dockerfile
     image: comfyui
-    container_name: comfyui
+    container_name: comfyui-amd
     network_mode: host
     environment:
-      # false, true, debug
+      # false, debug
       - BUILD=false
-      # adjust to you AMD GPU or Nvidia
-      # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
-      # zluda: https://github.com/vosen/ZLUDA
+      # AMD Rocm: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
+      - GPU=AMD
       - OPTIONS=--listen --use-pytorch-cross-attention
     ports:
       - "8188:8188"
