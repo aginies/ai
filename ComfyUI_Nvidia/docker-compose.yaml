@@ -3,31 +3,25 @@
 #version: '3.8'
 
 services:
-  api:
-    privileged: true
+  comfyui-nvidia:
+    image: comfyui-nvidia
+    container_name: comfyui-nvidia
     build:
       context: .
       dockerfile: Dockerfile
-    image: comfyui
-    container_name: comfyui-nvidia
     network_mode: host
+    restart: unless-stopped
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
       # false, debug
       - BUILD=false
       # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+      # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-zypper
       - GPU=NVIDIA
       - OPTIONS=--listen --use-pytorch-cross-attention
     ports:
       - "8188:8188"
-    devices:
-      - driver: nvidia
-        count: all
-        capabilities:
-          - gpu
-          - compute
-          - utility
     volumes:
       # models
       - /mnt/data/models:/ComfyUI/models
@@ -39,3 +33,21 @@ services:
       - /home/aginies/comfyUI/custom_nodes:/ComfyUI/custom_nodes
       # settings
       - /home/aginies/comfyUI/comfy.settings.json:/ComfyUI/user/default/comfy.settings.json
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - compute
+                - gpu
+# NOT SURE THIS IS STILL NEEDED....
+    devices:
+      - /dev/nvidia-caps:/dev/nvidia-caps
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvidia-modeset:/dev/nvidia-modeset
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools
+

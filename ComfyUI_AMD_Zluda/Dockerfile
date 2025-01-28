@@ -43,22 +43,13 @@ RUN cd ComfyUI \
 	&& python3.11 -m venv venv \
 	&& source venv/bin/activate \
 	&& pip install --upgrade pip wheel \
-	&& pip install --pre torch torchvision torchaudio \
+	&& pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3 \
 	&& pip install -r requirements.txt \
 	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/city96/ComfyUI_ExtraModels/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Fannovel16/comfyui_controlnet_aux/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/pythongosssss/ComfyUI-WD14-Tagger/refs/heads/main/requirements.txt -r https://raw.githubusercontent.com/Stability-AI/stability-ComfyUI-nodes/refs/heads/master/requirements.txt \
 	&& cd /usr/lib64/ \
 	&& wget https://github.com/vosen/ZLUDA/releases/download/v4/zluda-4-linux.tar.gz \
 	&& tar xvfz zluda-4-linux.tar.gz \
 	&& echo "/usr/lib64/zluda" > /etc/ld.so.conf.d/30-zluda.conf
-
-#	&& pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 \
-# if you are not mount bind custom nodes, you can get clone them into the containers
-#	&& cd custom_nodes \
-#	&& git clone https://github.com/ltdrdata/ComfyUI-Manager comfyui-manager \
-#	&& git clone https://github.com/romeobuilderotti/ComfyUI-PNG-Metadata ComfyUI-PNG-Metadata \
-#	&& git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git \
-#	&& git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
-
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

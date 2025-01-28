@@ -8,13 +8,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: comfyui
+    image: comfyui-amd
     container_name: comfyui-amd
     network_mode: host
     environment:
       # false, debug
       - BUILD=false
       # AMD Rocm: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
+      - GFX=11.0.0
       - GPU=AMD
       - OPTIONS=--listen --use-pytorch-cross-attention
     ports:

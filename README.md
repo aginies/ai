@@ -1,6 +1,6 @@
 # Goal
 
-Easily deploy containers to create AI images for **AMD GPU**. This should be possible to get it work for Nvidia card, but you need to adjust the **Dockerfile** and probably also **docker-compose.yaml**.
+Easily deploy containers to create AI images for **AMD GPU** or **NVIDIA GPU**.
 
 | Project | Container size | OS | Advantages | Drawbacks | 
 | :--------------- | :---: | :---: |:---: | :---: |
@@ -10,9 +10,9 @@ Easily deploy containers to create AI images for **AMD GPU**. This should be pos
 
 I recommend to use [ComfyUI](https://www.comfy.org/) as the interface is really powerfull and there is tons of capabilies.
 
-# Tweak AMD GPU card
+# AMD GPU card and Tweaking
 
-You need to install [AMD GPU](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/amdgpu-install.html#suse-linux-enterprise) to get the kernel module from AMD, this will Dkms rebuild the module.
+You need to install [AMD GPU](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/amdgpu-install.html#suse-linux-enterprise) to get the kernel module from AMD, this will **dkms** rebuild the module.
 
 At home I have a Radeon Merc310 7900XT, I tweak it a bit to improve the performance. There is some really good information at [AMD GPU](https://wiki.archlinux.org/title/AMDGPU). Create a **/etc/systemd/system/set-gpu-settings.service** with your values to get this applied to your system permanently.
 
@@ -49,14 +49,41 @@ sudo systemctl start set-power-cap.service
 sudo systemctl status set-power-cap.service
 ```
 
-# ComfyUI/docker-compose.yaml
+# NVIDIA GPU
 
-Create the container localAI for AMDGPU with rocm.
-ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188).
+Install the [Nvidia GPU driver](https://en.opensuse.org/SDB:NVIDIA_drivers). Check everything is ok after a reboot with the **nvidia-smi** command.
+Prepare docker, you need to install [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-zypper)
+
+# ComfyUI container
+
+ComfyUI service will be available at [http://YOURIP:8188](http://YOURIP:8188) as the option **--listen is enable**.
 **models**, **custom nodes**, **created images** and **workflow** should be stored
 outside of the containers. So check the volume in **docker-compose.yaml** file.
 
-## HowTo ComfyUI
+By default this container will be prepared for some **custom_nodes** requirements, but you need to clone it into your home directory to get them available. Check the **volume**
+directory in the **docker-compose.yaml** file.
+
+- [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
+- [ComfyUI_ExtraModels](https://github.com/city96/ComfyUI_ExtraModels)
+- [comfyui-controlnet-aux](https://github.com/comfyorg/comfyui-controlnet-aux)
+- [ComfyUI-WD14-Tagger](https://github.com/pythongosssss/ComfyUI-WD14-Tagger)
+- [stability-ComfyUI-nodes](https://github.com/Stability-AI/stability-ComfyUI-nodes)
+
+
+## ComfyUI_AMD/docker-compose.yaml
+
+Create the container ComfyUI for **AMDGPU / rocm**.
+It will use Rocm 6.3 development release. You can use a stable one like 6.2, change the **pip install** in the **Dockerfile** to something like:
+
+```dockerfile
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.2
+```
+
+## ComfyUI_NVIDIA/docker-compose.yaml
+
+Create the container ComfyUI for **NVIDIA / cuda**.
+
+## HowTo configure ComfyUI
 
 Adjust the volume in **docker-compose.yaml**:
 ```docker
@@ -129,11 +156,9 @@ usage: main.py [-h] [--listen [IP]] [--port PORT] [--tls-keyfile TLS_KEYFILE]
 HSA_OVERRIDE_GFX_VERSION=11.0.0 PYTORCH_HIP_ALLOC_CONF=expandable_segments:True TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1 ${PYBIN} main.py --force-fp16 --preview-method auto --gpu-only
 ```
 
-
 ## HowTo add custom_nodes with some python requirements
 
-A lot of **custome_nodes** are available, some needs some python requirements. You need to update the **pip install** command at the end of the **ComfyUI/Dockerfile** file to get them ready in the container.
-
+A lot of **custome_nodes** are available, some needs some python requirements. You need to update the **pip install** command at the end of the **ComfyUI_XYX/Dockerfile** file to get them ready in the container.
 
 ```
 RUN cd ComfyUI \
@@ -144,10 +169,11 @@ RUN cd ComfyUI \
 \
 	&& pip install -r requirements.txt \
 	&& pip install -r https://github.com/comfyanonymous/ComfyUI/raw/refs/heads/master/requirements.txt \
- -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r YOURREQUIREMENTSFILE
+         -r https://github.com/ltdrdata/ComfyUI-Manager/raw/refs/heads/main/requirements.txt -r YOURREQUIREMENTSFILE
 ```
 
-PS: You need to rebuild your container.
+PS: You need to rebuild your container after this modification.
+
 
 # localai/docker-compose.yaml
 
