@@ -13,7 +13,7 @@ services:
     network_mode: host
     environment:
       # false, debug
-      - BUILD=false
+      - BUILD=debug
       # AMD Zluda: https://github.com/vosen/ZLUDA
       - GPU=AMDZLUDA
       - OPTIONS=--listen --use-pytorch-cross-attention
