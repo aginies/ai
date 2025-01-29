@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    network_mode: host
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    volumes:
+      - ollama:/root/.ollama
+      - /mnt/data/models:/root/.ollama/models
+    ports:
+      - "11434:11434"
+
+volumes:
+  ollama:

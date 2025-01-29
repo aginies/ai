@@ -1,0 +1,15 @@
+# docker-compose.yaml
+# antoine@ginies.org
+#version: '3.8'
+
+services:
+  api:
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: amdgputop
+    container_name: amdgputop
+    devices:
+      - /dev/dri
+      - /dev/kfd
