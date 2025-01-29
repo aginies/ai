@@ -26,7 +26,6 @@ LABEL com.suse.release-stage="prototype"
 RUN zypper install --no-recommends -y \
 	python311-pip \
 	git \
-	libtcmalloc4 \
 	libglvnd \
 	python311-aiosqlite \
 	libtcmalloc4 \
