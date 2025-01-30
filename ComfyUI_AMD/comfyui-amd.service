@@ -1,6 +1,7 @@
 [Unit]
 Description=ComfyUI for AMD
-After=network-online.target
+After=docker.service,network-online.target
+Requires=docker.service
 
 [Service]
 Restart=always
