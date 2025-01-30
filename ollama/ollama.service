@@ -1,0 +1,23 @@
+[Unit]
+Description=Ollama Container Service Rocm
+After=docker.service,network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+Environment=MODELS=/mnt/data/models:/root/.ollama/models
+Environment=DATADIR=ollama:/root/.ollama
+Environment=PORTS=11434:11434
+Environment=ollama/ollama:rocm
+ExecStart=/usr/bin/docker run --name ollama-rocm \
+    -v ${MODELS} \
+    -v ${DATADIR} \
+    --network host \
+    --device /dev/kfd:/dev/kfd \
+    --device /dev/dri:/dev/dri \
+    -p ${PORTS} \
+	${IMAGES}
+ExecStop=/usr/bin/docker stop ollama-rocm
+
+[Install]
+WantedBy=multi-user.target
