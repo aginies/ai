@@ -1,0 +1,24 @@
+[Unit]
+Description=ollama
+After=network-online.target
+
+[Container]
+# For AMD devices
+Image=ollama/ollama:rocm
+# Adjust to your path to store all data and models
+Volume=/mnt/data/models:/root/.ollama/models
+Volume=ollama:/root/.ollama
+AddDevice=/dev/kfd
+AddDevice=/dev/dri
+Network=host
+PublishPort=11434:11434
+Label=io.containers.autoupdate=registry
+
+[Service]
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=70
+#WatchdogSec=60
+
+[Install]
+WantedBy=multi-user.target default.target
