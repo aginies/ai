@@ -6,9 +6,9 @@ Requires=docker.service
 [Service]
 Restart=always
 Environment=MODELS=/mnt/data/models:/root/.ollama/models
-Environment=DATADIR=ollama:/root/.ollama
+Environment=DATADIR=/home/aginies/github/ai/ollama:/root/.ollama
 Environment=PORTS=11434:11434
-Environment=ollama/ollama:rocm
+Environment=IMAGES=ollama/ollama:rocm
 ExecStart=/usr/bin/docker run --name ollama-rocm \
     -v ${MODELS} \
     -v ${DATADIR} \
