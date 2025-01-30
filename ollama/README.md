@@ -26,11 +26,10 @@ Before starting, ensure you have:
 
 ### 1. Define the Systemd Unit File
 
-Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`.
+Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume.
 
 ```bash
-#vi /etc/systemd/system/ollama-rocm.service
-[Unit]
+# vi /etc/systemd/system/ollama-rocm.service
 [Unit]
 Description=Ollama Container Service Rocm
 After=docker.service,network-online.target
