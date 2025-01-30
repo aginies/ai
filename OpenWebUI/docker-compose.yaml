@@ -4,8 +4,6 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
-    ports:
-      - "8080:8080"
     network_mode: host
     restart: always
     volumes:
@@ -22,6 +20,8 @@ services:
       - OLLAMA_BASE_URL=http://10.0.1.38:11434
       - ENABLE_OPENAI_API=false
       - DEFAULT_LOCALE=fr
+      #- WEBUI_URL=10.0.1.38:8080
+      - PORT=3000
       # ComfyUI
       - COMFYUI_BASE_URL=http://10.0.1.38:8188
       - ENABLE_IMAGE_GENERATION=true
