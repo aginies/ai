@@ -6,25 +6,26 @@ After=network-online.target,nginx.service
 Restart=always
 # Adjust to your path to store all data and models
 Environment=DATADIR=/mnt/data/openwebui/data:/app/backend/data
-Environment=IPOLLAMA=10.0.1.38
-Environment=IPCOMFYUI=10.0.1.38
+Environment=SRVOLLAMA=10.0.1.38:11434
+Environment=SRVCOMFYUI=10.0.1.38:8188
 ExecStop=/usr/bin/docker stop -t 2 open-webui
 
+# https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#security-variables
 ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
     -p 3000:3000 \
     -v ${DATADIR} \
     -e ENABLE_SIGNUP=false \
-    -e CORS_ALLOW_ORIGIN=* \
     -e WEBUI_AUTH=false \
+    -e CORS_ALLOW_ORIGIN=* \
     -e ENABLE_COMMUNITY_SHARING=false \
     -e ENABLE_EVALUATION_ARENA_MODELS=false \
     -e ENABLE_CHANNELS=false \
     -e ENABLE_MESSAGE_RATING=false \
-    -e OLLAMA_BASE_URL=http://${IPOLLAMA}:11434 \
+    -e OLLAMA_BASE_URL=http://${SRVOLLAMA} \
     -e ENABLE_OPENAI_API=false \
     -e DEFAULT_LOCALE=fr \
     -e PORT=3000 \
-    -e COMFYUI_BASE_URL=http://${IPCOMFYUI}:8188 \
+    -e COMFYUI_BASE_URL=http://${SRVCOMFYUI} \
     -e ENABLE_IMAGE_GENERATION=true \
     -e IMAGE_GENERATION_ENGINE=comfyui \
     -e IMAGE_GENERATION_MODEL=cyberrealistic_v41BackToBasics.safetensors \
