@@ -1,0 +1,9 @@
+{
+    "Comfy.Workflow.WorkflowTabsPosition": "Topbar",
+    "Comfy.LinkRenderMode": 2,
+    "Comfy.UseNewMenu": "Top",
+    "Comfy.TextareaWidget.Spellcheck": true,
+    "Comfy.Workflow.ShowMissingModelsWarning": true,
+    "LiteGraph.Canvas.MaximumFps": 60,
+    "pysssss.SnapToGrid": true
+}
