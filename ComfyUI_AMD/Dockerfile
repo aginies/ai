@@ -29,6 +29,7 @@ RUN zypper install --no-recommends -y \
 	libglvnd \
 	python311-aiosqlite \
 	libtcmalloc4 \
+	xorg-x11-fonts \
 	libglvnd \
 	libgthread-2_0-0 
 
