@@ -59,7 +59,15 @@ Prepare docker, you need to install [container-toolkit](https://docs.nvidia.com/
 
 # ComfyUI container
 
-Check README.md in the ComfyUI_AMD Directory.
+README.md in the ComfyUI_AMD Directory.
+
+# ollama container
+
+README.md in the ollama Directory.
+
+# OpenWebUI container
+
+README.md in the OpenWebUI Directory.
 
 # localai/docker-compose.yaml
 
