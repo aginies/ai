@@ -1,6 +1,6 @@
 # Ollama Systemd Service Setup
 
-This guide provides a step-by-step process for setting up an **ollama-rocm** container as a systemd service. This approach is useful when you want your container to start automatically at boot and be managed through systemd commands.
+This guide provides a step-by-step process for setting up an **ollama** container as a systemd service. This approach is useful when you want your container to start automatically at boot and be managed through systemd commands.
 
 ## Table of Contents
 
@@ -26,7 +26,7 @@ Before starting, ensure you have:
 
 ### 1. Define the Systemd Unit File
 
-Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume.
+Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume. for NVIDIA user set **IMAGES=ollama/ollama** and adjust the container name and service.
 
 ```bash
 # vi /etc/systemd/system/ollama-rocm.service
@@ -42,7 +42,7 @@ Environment=MODELS=/mnt/data/models:/root/.ollama/models
 # Creates and uses a Docker volume for persistent data.
 Environment=DATADIR=ollama:/root/.ollama
 Environment=PORTS=11434:11434
-Environment=ollama/ollama:rocm
+Environment=IMAGES=ollama/ollama:rocm
 ExecStart=/usr/bin/docker run --name ollama-rocm \
     -v ${MODELS} \
     -v ${DATADIR} \
