@@ -138,7 +138,7 @@ cd ai
 python3.11 serverhttp.py
 ```
 
-# server_gallery_images.py
+# web/server_gallery_images.py
 
 Quick python http server to show all the images by date creation on a web page (port 8000). It supports a modal display mode to quickly view all the images.
 
@@ -190,22 +190,10 @@ sudo systemctl status serverimage.service
 
 # External URL
 
-## LocalAI
-- [localAI](https://localai.io/)
-
-## ollama
-
-- [ollama](https://ollama.com/)
-
-## OpenWebUI
-
-- [openWebUI](https://docs.openwebui.com/)
-
 ## Rocm
 - [rocm AMD Doc](https://rocm.docs.amd.com/en/docs-6.2.4/index.html)
 
 ## stable-diffusion-webui
-- [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 - [stable-diffusion-webui-amdgpu](https://github.com/lshqqytiger/stable-diffusion-webui-amdgpu.git)
 
 ## models
