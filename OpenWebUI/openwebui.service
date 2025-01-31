@@ -8,8 +8,10 @@ Restart=always
 Environment=DATADIR=/mnt/data/openwebui/data:/app/backend/data
 Environment=SRVOLLAMA=10.0.1.38:11434
 Environment=SRVCOMFYUI=10.0.1.38:8188
+Environment=SRVSEAR=10.0.1.38:8080
 ExecStop=/usr/bin/docker stop -t 2 open-webui
 
+xecStartPre=-/usr/bin/docker rm -f open-webui
 # https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#security-variables
 ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
     -p 3000:3000 \
@@ -24,6 +26,11 @@ ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
     -e OLLAMA_BASE_URL=http://${SRVOLLAMA} \
     -e ENABLE_OPENAI_API=false \
     -e DEFAULT_LOCALE=fr \
+    -e ENABLE_RAG_WEB_SEARCH=True \
+    -e RAG_WEB_SEARCH_ENGINE=searxng \
+    -e RAG_WEB_SEARCH_RESULT_COUNT=5 \
+    -e RAG_WEB_SEARCH_CONCURRENT_REQUESTS=10 \
+    -e SEARXNG_QUERY_URL=http://${SRVSEAR}/search?q=<query> \
     -e PORT=3000 \
     -e COMFYUI_BASE_URL=http://${SRVCOMFYUI} \
     -e ENABLE_IMAGE_GENERATION=true \
