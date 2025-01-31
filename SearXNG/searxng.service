@@ -1,0 +1,25 @@
+[Unit]
+Description=SearXNG Service
+After=docker.service,network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+Environment=CONFIG=/etc/searxng:/etc/searxng:rw
+Environment=IMAGES=searxng/searxng:latest
+ExecStartPre=-/usr/bin/docker rm -f searxng
+ExecStart=/usr/bin/docker run --name searxng \
+  -v ${CONFIG} \
+  -p 8080:8080 \
+  -e SEARXNG_HOSTNAME=10.0.1.38:8080/ \
+  --cap-drop ALL \
+  --cap-add CHOWN \
+  --cap-add SETGID \
+  --cap-add SETUID \
+  --cap-add DAC_OVERRIDE \
+	${IMAGES}
+
+ExecStop=/usr/bin/docker stop -t 0 searxng
+
+[Install]
+WantedBy=multi-user.target
