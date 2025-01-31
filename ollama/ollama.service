@@ -9,7 +9,8 @@ Environment=MODELS=/mnt/data/models:/root/.ollama/models
 Environment=DATADIR=/home/aginies/github/ai/ollama:/root/.ollama
 Environment=PORTS=11434:11434
 Environment=IMAGES=ollama/ollama:rocm
-ExecStart=/usr/bin/docker run --name ollama-rocm \
+ExecStartPre=-/usr/bin/docker rm -f ollama
+ExecStart=/usr/bin/docker run --name ollama \
     -v ${MODELS} \
     -v ${DATADIR} \
     --network host \
@@ -17,7 +18,7 @@ ExecStart=/usr/bin/docker run --name ollama-rocm \
     --device /dev/dri:/dev/dri \
     -p ${PORTS} \
 	${IMAGES}
-ExecStop=/usr/bin/docker stop ollama-rocm
+ExecStop=/usr/bin/docker stop ollama
 
 [Install]
 WantedBy=multi-user.target

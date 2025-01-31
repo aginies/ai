@@ -26,7 +26,7 @@ Before starting, ensure you have:
 
 ### 1. Define the Systemd Unit File
 
-Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume. for NVIDIA user set **IMAGES=ollama/ollama** and adjust the container name and service.
+Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume. for NVIDIA user set **IMAGES=ollama/ollama**.
 
 ```bash
 # vi /etc/systemd/system/ollama-rocm.service
@@ -43,7 +43,8 @@ Environment=MODELS=/mnt/data/models:/root/.ollama/models
 Environment=DATADIR=ollama:/root/.ollama
 Environment=PORTS=11434:11434
 Environment=IMAGES=ollama/ollama:rocm
-ExecStart=/usr/bin/docker run --name ollama-rocm \
+ExecStartPre=-/usr/bin/docker rm -f ollama
+ExecStart=/usr/bin/docker run --name ollama \
     -v ${MODELS} \
     -v ${DATADIR} \
     --network host \ # Uses the host network stack, which simplifies networking
@@ -51,14 +52,14 @@ ExecStart=/usr/bin/docker run --name ollama-rocm \
     --device /dev/dri:/dev/dri \ # Provides direct rendering interfaces from the host.
     -p ${PORTS} \
 	${IMAGES}
-ExecStop=/usr/bin/docker stop ollama-rocm
+ExecStop=/usr/bin/docker stop ollama
 ```
 
 ### 2. Create the Docker Volume 
 
-Create a volume named ollama-rocm before starting the service: 
+Create a volume named ollama before starting the service: 
 ```bash
-# docker volume create ollama-rocm
+# docker volume create ollama
 ```
  
 ### 3. Reload and Enable the Systemd Service 
@@ -66,29 +67,29 @@ Create a volume named ollama-rocm before starting the service:
 Inform systemd about the new service and enable it to start at boot: 
 ```bash
 # sudo systemctl daemon-reload
-# sudo systemctl enable ollama-rocm.service
+# sudo systemctl enable ollama.service
 ```
  
 ### 4. Start the Service 
 
-Begin the ollama-rocm service using the following command: 
+Begin the ollama service using the following command: 
 ```bash
-# sudo systemctl start ollama-rocm.service
+# sudo systemctl start ollama.service
 ```
  
 ### 5. Verify the Status 
 
 Confirm that the service is running correctly: 
 ```bash
-# sudo systemctl status ollama-rocm.service
+# sudo systemctl status ollama.service
 ```
 
 ## Managing the Service
 
-- Start : sudo systemctl start ollama-rocm.service
-- Stop : sudo systemctl stop ollama-rocm.service
-- Restart : sudo systemctl restart ollama-rocm.service
-- Status : sudo systemctl status ollama-rocm.service
+- Start : sudo systemctl start ollama.service
+- Stop : sudo systemctl stop ollama.service
+- Restart : sudo systemctl restart ollama.service
+- Status : sudo systemctl status ollama.service
      
 
 ## Notes 

@@ -11,8 +11,8 @@ services:
     volumes:
       - ollama:/root/.ollama
       - /mnt/data/models:/root/.ollama/models
-    ports:
-      - "11434:11434"
+    #ports:
+    #  - "11434:11434"
 
 volumes:
   ollama:
