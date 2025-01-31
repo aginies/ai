@@ -1,6 +1,6 @@
 # Goal
 
-Easily deploy containers to create AI images for **AMD GPU** or **NVIDIA GPU**.
+Easily deploy containers to create AI images or use **LLM** for **AMD** or **NVIDIA**.
 
 | Project | Container size | OS | Advantages | Drawbacks | 
 | :--------------- | :---: | :---: |:---: | :---: |
@@ -10,10 +10,42 @@ Easily deploy containers to create AI images for **AMD GPU** or **NVIDIA GPU**.
 | [ollama](https://ollama.com/) | 8.3Gb | Ubuntu 22.04.5 LTS | Very powerfull |Need an interface, can't use LM Studio model without conversion |
 | [openWebUI](https://docs.openwebui.com/) | 4.3Gb | Debian GNU/Linux 12 | perfect GPT clone | Disabling some stuff is mandatory to avoid overcharged interface |
 
-I recommend to use [ComfyUI](https://www.comfy.org/) to generate image as the interface is really powerfull and there is tons of capabilies.
-[ollama](https://ollama.com/) is the best option to manage **LLM**, and [openWebUI](https://docs.openwebui.com/) is the perfect interface to use your **LLM**.
 
-# AMD GPU card and Tweaking
+## Image Generation
+
+I recommend using [ComfyUI](https://www.comfy.org/) to generate images, as its interface is powerful and offers a wide range of capabilities and generate high-quality images.
+
+## Managing Large Language Models (LLM)
+
+For managing **LLMs**, I highly suggest using [ollama](https://ollama.com/). It provides robust tools to handle the complexities associated with large language models effectively.
+
+Additionally, if you're looking for an excellent interface to use your **LLMs**, consider [openWebUI](https://docs.openwebui.com/), which offers a seamless user experience and advanced features.
+
+# GPU Hardware
+
+## Hardware Recommendations
+
+To enhance performance and ensure smooth operation, especially when dealing with resource-intensive tasks such as image generation or handling large language models, I recommend using a VGPU (Virtual GPU) with ample VRAM (Video RAM). A high-performance VGPU will significantly improve the rendering speed and overall efficiency of your workflow.
+
+For optimal performance, consider the following specifications:
+- **VRAM:** At least 8 GB of VRAM is recommended. For heavy workloads, 16 GB or more would be ideal.
+- **CUDA Cores/Stream Processors:** Ensure your VGPU has a sufficient number of CUDA cores (Nvidia) or Stream Processors (AMD) cores for efficient processing.
+- **Bandwidth:** High bandwidth to handle large datasets and complex computations.
+
+### NVIDIA:
+- **NVIDIA vGPU:** Offers a comprehensive suite of VGPU solutions, including CUDA cores for parallel computing tasks.
+- **NVIDIA Tensor Core GPUs:** Optimized for deep learning and AI workloads.
+
+#### AMD:
+- **AMD Radeon Pro:** Provides powerful GPU solutions for professional workflows, with a focus on Stream Processors.
+- **ROCM (Radeon Open Compute):** An open-source platform for GPU computing that supports AMD GPUs.
+
+### NVIDIA CUDA Leadership
+
+NVIDIA's CUDA technology is widely recognized as the industry standard for parallel computing. With thousands of developers and organizations leveraging CUDA for various applications, including deep learning, scientific computing, and graphics rendering, it has become a cornerstone in modern high-performance computing environments.
+
+
+## AMD GPU card and Tweaking
 
 You need to install [AMD GPU](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/amdgpu-install.html#suse-linux-enterprise) to get the kernel module from AMD, this will **dkms** rebuild the module.
 
@@ -52,7 +84,7 @@ sudo systemctl start set-power-cap.service
 sudo systemctl status set-power-cap.service
 ```
 
-# NVIDIA GPU
+## NVIDIA GPU
 
 Install the [Nvidia GPU driver](https://en.opensuse.org/SDB:NVIDIA_drivers). Check everything is ok after a reboot with the **nvidia-smi** command.
 Prepare docker, you need to install [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-zypper)
