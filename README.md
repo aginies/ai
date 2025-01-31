@@ -4,11 +4,14 @@ Easily deploy containers to create AI images for **AMD GPU** or **NVIDIA GPU**.
 
 | Project | Container size | OS | Advantages | Drawbacks | 
 | :--------------- | :---: | :---: |:---: | :---: |
-| [ComfyUI](https://www.comfy.org/) | 26Gb  | Leap15.6 | Huge customisation possible, no limit | Could be complex as there is a lot of custom_nodes available |
+| [ComfyUI](https://www.comfy.org/) | 26Gb  | OpenSUSE Leap15.6 | Huge customisation possible, no limit | Could be complex as there is a lot of custom_nodes available |
 | [LocalAI web](https://github.com/mudler/LocalAI) | 109Gb | Ubuntu | Easy to deploy and include other AI stuff |  Limited for the image part |
-| [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 23.9Gb | Leap15.6 | Lot of capabilities | Limited and UI layout is confusing |
+| [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 23.9Gb | OpenSUSE Leap15.6 | Lot of capabilities | Limited and UI layout is confusing |
+| [ollama](https://ollama.com/) | 8.3Gb | Ubuntu 22.04.5 LTS | Very powerfull |Need an interface, can't use LM Studio model without conversion |
+| [openWebUI](https://docs.openwebui.com/) | 4.3Gb | Debian GNU/Linux 12 | perfect GPT clone | Disabling some stuff is mandatory to avoid overcharged interface |
 
-I recommend to use [ComfyUI](https://www.comfy.org/) as the interface is really powerfull and there is tons of capabilies.
+I recommend to use [ComfyUI](https://www.comfy.org/) to generate image as the interface is really powerfull and there is tons of capabilies.
+[ollama](https://ollama.com/) is the best option to manage **LLM**, and [openWebUI](https://docs.openwebui.com/) is the perfect interface to use your **LLM**.
 
 # AMD GPU card and Tweaking
 
