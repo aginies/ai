@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Tika Service
+After=docker.service,network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f tika
+ExecStart=/usr/bin/docker run --name tika \
+  -p 9998:9998 \
+	apache/tika:latest-full
+
+ExecStop=/usr/bin/docker stop -t 0 tika
+
+[Install]
+WantedBy=multi-user.target
