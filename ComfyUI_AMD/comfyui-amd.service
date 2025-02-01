@@ -12,7 +12,6 @@ Environment=GFX=11.0.0
 Environment=BUILD=false
 Environment=GPU=AMD
 Environment=OPTIONS=--listen --use-pytorch-cross-attention
-Environment=MODELS=/mnt/data/models:/ComfyUI/models
 ExecStartPre=-/usr/bin/docker rm -f comfyui-amd
 ExecStart=/usr/bin/docker run --name comfyui-amd \
     --privileged \
@@ -20,8 +19,8 @@ ExecStart=/usr/bin/docker run --name comfyui-amd \
     -e BUILD=${BUILD} \
     -e GFX=${GFX} \
     -e GPU=${GPU} \
-    -e OPTIONS=${OPTIONS} \
-    -v ${MODELS} \
+    -e OPTIONS="--listen --use-pytorch-cross-attention" \
+    -v /mnt/data/models:/ComfyUI/models \
     -v /home/aginies/comfyUI/output:/ComfyUI/output \
     -v /home/aginies/comfyUI/my_workflows:/ComfyUI/my_workflows \
     -v /home/aginies/comfyUI/custom_nodes:/ComfyUI/custom_nodes \

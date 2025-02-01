@@ -11,6 +11,7 @@ services:
     volumes:
       - ollama:/root/.ollama
       - /mnt/data/models:/root/.ollama/models
+      - /mnt/datawin:/win
     #ports:
     #  - "11434:11434"
 
