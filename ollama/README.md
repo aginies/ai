@@ -31,7 +31,7 @@ Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut 
 ```bash
 # vi /etc/systemd/system/ollama-rocm.service
 [Unit]
-Description=Ollama Container Service Rocm
+Description=Ollama Rocm Container Service
 After=docker.service,network-online.target
 Requires=docker.service
 
@@ -47,7 +47,6 @@ ExecStartPre=-/usr/bin/docker rm -f ollama
 ExecStart=/usr/bin/docker run --name ollama \
     -v ${MODELS} \
     -v ${DATADIR} \
-    --network host \ # Uses the host network stack, which simplifies networking
     --device /dev/kfd:/dev/kfd \ # Grants access to GPU devices required by Ollama.
     --device /dev/dri:/dev/dri \ # Provides direct rendering interfaces from the host.
     -p ${PORTS} \

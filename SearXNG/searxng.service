@@ -7,11 +7,12 @@ Requires=docker.service
 Restart=always
 Environment=CONFIG=/etc/searxng:/etc/searxng:rw
 Environment=IMAGES=searxng/searxng:latest
+Environment=IPADDR=10.0.1.38
 ExecStartPre=-/usr/bin/docker rm -f searxng
 ExecStart=/usr/bin/docker run --name searxng \
   -v ${CONFIG} \
   -p 8080:8080 \
-  -e SEARXNG_HOSTNAME=10.0.1.38:8080/ \
+  -e SEARXNG_HOSTNAME=${IPADDR}:8080/ \
   --cap-drop ALL \
   --cap-add CHOWN \
   --cap-add SETGID \
