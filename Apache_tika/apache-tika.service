@@ -1,16 +1,15 @@
 [Unit]
 Description=Apache Tika Service
-After=docker.service,network-online.target
-Requires=docker.service
+After=network-online.target
 
 [Service]
 Restart=always
-ExecStartPre=-/usr/bin/docker rm -f tika
-ExecStart=/usr/bin/docker run --name tika \
+ExecStartPre=-/usr/bin/podman rm -f apache-tika
+ExecStart=/usr/bin/podman run --name apache-tika \
   -p 9998:9998 \
 	apache/tika:latest-full
 
-ExecStop=/usr/bin/docker stop -t 0 tika
+ExecStop=/usr/bin/podman stop -t 0 apache-tika
 
 [Install]
 WantedBy=multi-user.target

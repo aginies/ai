@@ -1,15 +1,14 @@
 [Unit]
 Description=SearXNG Service
-After=docker.service,network-online.target
-Requires=docker.service
+After=network-online.target
 
 [Service]
 Restart=always
 Environment=CONFIG=/etc/searxng:/etc/searxng:rw
 Environment=IMAGES=searxng/searxng:latest
-Environment=IPADDR=10.0.1.38
-ExecStartPre=-/usr/bin/docker rm -f searxng
-ExecStart=/usr/bin/docker run --name searxng \
+Environment=IPADDR_SEARXNG=10.0.1.38
+ExecStartPre=-/usr/bin/podman rm -f searxng
+ExecStart=/usr/bin/podman run --name searxng \
   -v ${CONFIG} \
   -p 8080:8080 \
   -e SEARXNG_HOSTNAME=${IPADDR}:8080/ \
@@ -20,7 +19,7 @@ ExecStart=/usr/bin/docker run --name searxng \
   --cap-add DAC_OVERRIDE \
 	${IMAGES}
 
-ExecStop=/usr/bin/docker stop -t 0 searxng
+ExecStop=/usr/bin/podman stop -t 0 searxng
 
 [Install]
 WantedBy=multi-user.target

@@ -1,19 +1,19 @@
 [Unit]
 Description=OpenWebUI
-After=docker.service,network-online.target,nginx.service,ollama.service
-Requires=docker.service,nginx.service,ollama.service
+After=network-online.target,nginx.service,ollama.service
+Requires=nginx.service,ollama.service
 
 [Service]
 Restart=always
 # Adjust to your path to store all data and models
 Environment=DATADIR=/mnt/data/openwebui/data:/app/backend/data
-Environment=SRVOLLAMA=10.0.1.38:11434
-Environment=SRVCOMFYUI=10.0.1.38:8188
-ExecStop=/usr/bin/docker stop -t 2 open-webui
+Environment=IPADDR_OLLAMA=10.0.1.38
+Environment=IPADDR_COMFYUI=10.0.1.38
+ExecStop=/usr/bin/podman stop -t 2 open-webui
 
-ExecStartPre=-/usr/bin/docker rm -f open-webui
+ExecStartPre=-/usr/bin/podman rm -f open-webui
 # https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#security-variables
-ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
+ExecStart=/bin/sh -c 'podman run --rm --name=open-webui \
     -p 3000:3000 \
     -v ${DATADIR} \
     -e ENABLE_SIGNUP=false \
@@ -24,11 +24,11 @@ ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
     -e ENABLE_CHANNELS=false \
     -e GLOBAL_LOG_LEVEL="DEBUG" \
     -e ENABLE_MESSAGE_RATING=false \
-    -e OLLAMA_BASE_URL=http://${SRVOLLAMA} \
+    -e OLLAMA_BASE_URL=http://${IPADDR_OLLAMA}:11434 \
     -e ENABLE_OPENAI_API=false \
     -e DEFAULT_LOCALE=fr \
     -e PORT=3000 \
-    -e COMFYUI_BASE_URL=http://${SRVCOMFYUI} \
+    -e COMFYUI_BASE_URL=http://${IPADDR_COMFYUI}:8188 \
     -e ENABLE_IMAGE_GENERATION=true \
     -e IMAGE_GENERATION_ENGINE=comfyui \
     -e IMAGE_GENERATION_MODEL=cyberrealistic_v41BackToBasics.safetensors \

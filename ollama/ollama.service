@@ -1,7 +1,6 @@
 [Unit]
 Description=Ollama Rocm Container Service
-After=docker.service,network-online.target
-Requires=docker.service
+After=network-online.target
 
 [Service]
 Restart=always
@@ -9,15 +8,15 @@ Environment=MODELS=/mnt/data/models
 Environment=DATADIR=/home/aginies
 Environment=PORTS=11434:11434
 Environment=IMAGES=ollama/ollama:rocm
-ExecStartPre=-/usr/bin/docker rm -f ollama
-ExecStart=/usr/bin/docker run --name ollama \
+ExecStartPre=-/usr/bin/podman rm -f ollama
+ExecStart=/usr/bin/podman run --name ollama \
     -v ${MODELS}:/root/.ollama/models \
     -v ${DATADIR}/ollama:/root/.ollama \
     --device /dev/kfd:/dev/kfd \
     --device /dev/dri:/dev/dri \
     -p ${PORTS} \
 	${IMAGES}
-ExecStop=/usr/bin/docker stop ollama
+ExecStop=/usr/bin/podman stop ollama
 
 [Install]
 WantedBy=multi-user.target
