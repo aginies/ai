@@ -7,7 +7,7 @@ This guide provides a step-by-step process for setting up an **open-webui** cont
 - [Prerequisites](#prerequisites)
 - [Steps to Create a Systemd Service](#steps-to-create-a-systemd-service)
   - [1. Define the Systemd Unit File](#1-define-the-systemd-unit-file)
-  - [2. Create the Docker Volume](#2-create-the-docker-volume)
+  - [2. Create the podman Volume](#2-create-the-podman-volume)
   - [3. Reload and Enable the Systemd Service](#3-reload-and-enable-the-systemd-service)
   - [4. Start the Service](#4-start-the-service)
   - [5. Verify the Status](#5-verify-the-status)
@@ -18,7 +18,7 @@ This guide provides a step-by-step process for setting up an **open-webui** cont
 
 Before starting, ensure you have:
 
-- **Docker** installed and running on your system.
+- **podman** installed and running on your system.
 - Sufficient privileges (sudo or root) to create systemd service files and manage Docker volumes.
 - Ensure Docker is enabled and managed by systemd.
 
@@ -32,31 +32,35 @@ Create a new file named `open-webui.service` in `/etc/systemd/system/`. Adjust t
 # vi /etc/systemd/system/open-webui.service
 [Unit]
 Description=OpenWebUI
-After=network-online.target
+After=network-online.target,nginx.service,ollama.service
+Requires=nginx.service,ollama.service
 
 [Service]
 Restart=always
 # Adjust to your path to store all data and models
 Environment=DATADIR=/mnt/data/openwebui/data:/app/backend/data
-Environment=IPOLLAMA=10.0.1.38
-Environment=IPCOMFYUI=10.0.1.38
-ExecStop=/usr/bin/docker stop -t 2 open-webui
+Environment=IPADDR_OLLAMA=10.0.1.38
+Environment=IPADDR_COMFYUI=10.0.1.38
+ExecStop=/usr/bin/podman stop -t 2 open-webui
 
-ExecStart=/bin/sh -c 'docker run --rm --name=open-webui \
+ExecStartPre=-/usr/bin/podman rm -f open-webui
+# https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#security-variables
+ExecStart=/bin/sh -c 'podman run --rm --name=open-webui \
     -p 3000:3000 \
     -v ${DATADIR} \
     -e ENABLE_SIGNUP=false \
-    -e CORS_ALLOW_ORIGIN=* \
     -e WEBUI_AUTH=false \
+    -e CORS_ALLOW_ORIGIN=* \
     -e ENABLE_COMMUNITY_SHARING=false \
     -e ENABLE_EVALUATION_ARENA_MODELS=false \
     -e ENABLE_CHANNELS=false \
+    -e GLOBAL_LOG_LEVEL="DEBUG" \
     -e ENABLE_MESSAGE_RATING=false \
-    -e OLLAMA_BASE_URL=http://${IPOLLAMA}:11434 \
+    -e OLLAMA_BASE_URL=http://${IPADDR_OLLAMA}:11434 \
     -e ENABLE_OPENAI_API=false \
     -e DEFAULT_LOCALE=fr \
     -e PORT=3000 \
-    -e COMFYUI_BASE_URL=http://${IPCOMFYUI}:8188 \
+    -e COMFYUI_BASE_URL=http://${IPADDR_COMFYUI}:8188 \
     -e ENABLE_IMAGE_GENERATION=true \
     -e IMAGE_GENERATION_ENGINE=comfyui \
     -e IMAGE_GENERATION_MODEL=cyberrealistic_v41BackToBasics.safetensors \
@@ -72,11 +76,11 @@ TimeoutStopSec=70
 WantedBy=multi-user.target default.target
 ```
 
-### 2. Create the Docker Volume 
+### 2. Create the podman Volume 
 
 Create a volume named open-webui before starting the service: 
 ```bash
-# docker volume create open-webui
+# podman volume create open-webui
 ```
  
 ### 3. Reload and Enable the Systemd Service 

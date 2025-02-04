@@ -7,7 +7,7 @@ This guide provides a step-by-step process for setting up an **ollama** containe
 - [Prerequisites](#prerequisites)
 - [Steps to Create a Systemd Service](#steps-to-create-a-systemd-service)
   - [1. Define the Systemd Unit File](#1-define-the-systemd-unit-file)
-  - [2. Create the Docker Volume](#2-create-the-docker-volume)
+  - [2. Create the podman Volume](#2-create-the-podman-volume)
   - [3. Reload and Enable the Systemd Service](#3-reload-and-enable-the-systemd-service)
   - [4. Start the Service](#4-start-the-service)
   - [5. Verify the Status](#5-verify-the-status)
@@ -18,7 +18,7 @@ This guide provides a step-by-step process for setting up an **ollama** containe
 
 Before starting, ensure you have:
 
-- **Docker** installed and running on your system.
+- **podman** installed and running on your system.
 - Sufficient privileges (sudo or root) to create systemd service files and manage Docker volumes.
 - Ensure Docker is enabled and managed by systemd.
 
@@ -32,33 +32,33 @@ Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut 
 # vi /etc/systemd/system/ollama-rocm.service
 [Unit]
 Description=Ollama Rocm Container Service
-After=docker.service,network-online.target
-Requires=docker.service
+After=network-online.target
 
 [Service]
 Restart=always
-# Mounts a host directory to the container for model storage.
-Environment=MODELS=/mnt/data/models:/root/.ollama/models
-# Creates and uses a Docker volume for persistent data.
-Environment=DATADIR=ollama:/root/.ollama
+Environment=MODELS=/mnt/data/models
+Environment=DATADIR=/home/aginies
 Environment=PORTS=11434:11434
 Environment=IMAGES=ollama/ollama:rocm
-ExecStartPre=-/usr/bin/docker rm -f ollama
-ExecStart=/usr/bin/docker run --name ollama \
-    -v ${MODELS} \
-    -v ${DATADIR} \
+ExecStartPre=-/usr/bin/podman rm -f ollama
+ExecStart=/usr/bin/podman run --name ollama \
+    -v ${MODELS}:/root/.ollama/models \
+    -v ${DATADIR}/ollama:/root/.ollama \
     --device /dev/kfd:/dev/kfd \ # Grants access to GPU devices required by Ollama.
     --device /dev/dri:/dev/dri \ # Provides direct rendering interfaces from the host.
     -p ${PORTS} \
 	${IMAGES}
-ExecStop=/usr/bin/docker stop ollama
+ExecStop=/usr/bin/podman stop ollama
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-### 2. Create the Docker Volume 
-
+### 2. Create the podman Volume
+ 
 Create a volume named ollama before starting the service: 
 ```bash
-# docker volume create ollama
+# podman volume create ollama
 ```
  
 ### 3. Reload and Enable the Systemd Service 
