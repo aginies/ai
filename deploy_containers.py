@@ -2,7 +2,8 @@
 """
  quickly deploy all AI services
  Apache_tika  OpenWebUI  SearXNG ollama
- ComfyUI_AMD
+ NOT YET: ComfyUI_AMD
+ NOTE: using zypper to install some packages
  antoine@ginies.org
 """
 
@@ -10,10 +11,9 @@ import shutil
 import subprocess
 import os
 import sys
-import systemd.journal
-from systemd import journal
-import yaml
 import time
+import systemd.journal
+import yaml
 
 # USER VALUE; ADJUST TO YOUR NEED
 VALUE_IPADDR_SEARXNG = "192.168.122.99"
@@ -35,22 +35,22 @@ apache_tika = ServiceData(name='Apache_tika',
                           containername='tika',
                           imagename='docker.io/apache/tika:latest-full',
                           servicename='apache-tika.service',
-                          )
+                         )
 ollama = ServiceData(name='ollama',
                      containername='ollama',
                      imagename='docker.io/ollama/ollama:rocm',
                      servicename='ollama.service',
-                     )
+                    )
 searxng = ServiceData(name='SearXNG',
-                     containername='searxng',
-                     imagename='docker.io/searxng/searxng',
-                     servicename='searxng.service',
-                      )
+                      containername='searxng',
+                      imagename='docker.io/searxng/searxng',
+                      servicename='searxng.service',
+                     )
 open_webui = ServiceData(name='OpenWebUI',
-                     containername='open-webui',
+                         containername='open-webui',
                          imagename='ghcr.io/open-webui/open-webui:main',
-                     servicename='openwebui.service',
-                      )
+                         servicename='openwebui.service',
+                        )
 
 # container name
 CONTAINERS = ["apache-tika", "searxng", "ollama", "open-webui"]
@@ -305,7 +305,7 @@ if __name__ == "__main__":
 
     # nginx is not a container yet...
     install_and_configure_nginx()
-    start_service(nginx)
+    start_service("nginx")
 
     for service_name in SERVICES:
         src_dir = service_name
@@ -327,7 +327,7 @@ if __name__ == "__main__":
             start_service(srv_file)
             # need to modify the searxng config to support json, do it after starting the servive
             # to be sure that the settings.yml is present
-            if srv_file == "searxng.service" :
+            if srv_file == "searxng.service":
                 print("Waiting 10 sec to get service up")
                 time.sleep(10)
                 stop_service(srv_file)
