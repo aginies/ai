@@ -1,0 +1,36 @@
+[Unit]
+Description=ComfyUI for NVIDIA
+After=docker.service,network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=70
+Environment=BUILD=false
+Environment=GPU=NVIDIA
+Environment=MODELS=/mnt/data/models
+Environment=DATADIR=/home/aginies
+Environment=OPTIONS=--listen --use-pytorch-cross-attention
+ExecStartPre=-/usr/bin/docker rm -f comfyui-nvidia
+ExecStart=/usr/bin/docker run --name comfyui-nvidia \
+    --privileged \
+    --network host \
+    -e BUILD=${BUILD} \
+    -e GPU=${GPU} \
+    -e OPTIONS="--listen --use-pytorch-cross-attention" \
+    --gpus all \
+    -e NVIDIA_VISIBLE_DEVICES=all \
+    -e NVIDIA_DRIVER_CAPABILITIES=compute,gpu \
+    -v ${MODELS}:/ComfyUI/models \
+    -v ${DATADIR}/comfyUI/output:/ComfyUI/output \
+    -v ${DATADIR}/comfyUI/my_workflows:/ComfyUI/my_workflows \
+    -v ${DATADIR}/comfyUI/custom_nodes:/ComfyUI/custom_nodes \
+    -v ${DATADIR}/comfyUI/comfy.settings.json:/ComfyUI/user/default/comfy.settings.json \
+	comfyui-nvidia
+
+ExecStop=/usr/bin/docker stop comfyui-nvidia
+
+[Install]
+WantedBy=multi-user.target default.target
