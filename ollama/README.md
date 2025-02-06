@@ -26,33 +26,7 @@ Before starting, ensure you have:
 
 ### 1. Define the Systemd Unit File
 
-Create a new file named `ollama-rocm.service` in `/etc/systemd/system/`. Adjsut the value to your needs, especially the volume. for NVIDIA user set **IMAGES=ollama/ollama**.
-
-```bash
-# vi /etc/systemd/system/ollama-rocm.service
-[Unit]
-Description=Ollama Rocm Container Service
-After=network-online.target
-
-[Service]
-Restart=always
-Environment=MODELS=/mnt/data/models
-Environment=DATADIR=/home/aginies
-Environment=PORTS=11434:11434
-Environment=IMAGES=ollama/ollama:rocm
-ExecStartPre=-/usr/bin/podman rm -f ollama
-ExecStart=/usr/bin/podman run --name ollama \
-    -v ${MODELS}:/root/.ollama/models \
-    -v ${DATADIR}/ollama:/root/.ollama \
-    --device /dev/kfd:/dev/kfd \ # Grants access to GPU devices required by Ollama.
-    --device /dev/dri:/dev/dri \ # Provides direct rendering interfaces from the host.
-    -p ${PORTS} \
-	${IMAGES}
-ExecStop=/usr/bin/podman stop ollama
-
-[Install]
-WantedBy=multi-user.target
-```
+Copy the file named `ollama-rocm.service` or `ollama-nvidia.service` in `/etc/systemd/system/`. Adjust the value to your needs, especially the volume (for NVIDIA user set **IMAGES=ollama/ollama**).
 
 ### 2. Create the podman Volume
  
