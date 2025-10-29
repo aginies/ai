@@ -1,0 +1,23 @@
+[Unit]
+Description=Ollama Container Service Nvidia
+After=network-online.target
+
+[Service]
+Restart=always
+Environment=MODELS=/mnt/data/models:/root/.ollama/models
+Environment=DATADIR=/home/aginies/github/ai/ollama:/root/.ollama
+Environment=PORTS=11434:11434
+Environment=IMAGES=ollama/ollama
+ExecStartPre=-/usr/bin/podman rm -f ollama-nvidia
+ExecStart=/usr/bin/podman run --name ollama-nvidia \
+    -v ${MODELS} \
+    -v ${DATADIR} \
+    --gpus all \
+    -e NVIDIA_VISIBLE_DEVICES=all \
+    -e NVIDIA_DRIVER_CAPABILITIES=compute,gpu \
+    -p ${PORTS} \
+	${IMAGES}
+ExecStop=/usr/bin/podman stop ollama-nvidia
+
+[Install]
+WantedBy=multi-user.target

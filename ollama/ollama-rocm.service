@@ -8,15 +8,15 @@ Environment=MODELS=/mnt/data/models
 Environment=DATADIR=/home/aginies
 Environment=PORTS=11434:11434
 Environment=IMAGES=ollama/ollama:rocm
-ExecStartPre=-/usr/bin/podman rm -f ollama
-ExecStart=/usr/bin/podman run --name ollama \
+ExecStartPre=-/usr/bin/podman rm -f ollama-rocm
+ExecStart=/usr/bin/podman run --name ollama-rocm \
     -v ${MODELS}:/root/.ollama/models \
     -v ${DATADIR}/ollama:/root/.ollama \
     --device /dev/kfd:/dev/kfd \
     --device /dev/dri:/dev/dri \
     -p ${PORTS} \
 	${IMAGES}
-ExecStop=/usr/bin/podman stop ollama
+ExecStop=/usr/bin/podman stop ollama-rocm
 
 [Install]
 WantedBy=multi-user.target
