@@ -8,6 +8,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from PIL import Image
 
+html_lock = threading.Lock()
+
 # Directory to watch
 IMAGES_DIR = "/home/aginies/comfyUI/output"
 THUMB_SIZE = 200  # Parameter for thumbnail size in pixels
@@ -226,6 +228,7 @@ HTML_TEMPLATE = """
                 <li><strong>Zoom:</strong> Use the mouse wheel to zoom in and out.</li>
                 <li><strong>Pan:</strong> Click and drag the image to move it around.</li>
                 <li><strong>Close Modal:</strong> Press <kbd>Esc</kbd> or click the <strong>&times;</strong> button.</li>
+                <li><strong>Delete:</strong> Press <kbd>Delete</kbd> to delete the current image.</li>
             </ul>
             <button class="close-help-button" onclick="hideHelp()">Close Help</button>
         </div>
@@ -248,6 +251,9 @@ HTML_TEMPLATE = """
                         break;
                     case 'ArrowRight':
                         nextImage();
+                        break;
+                    case 'Delete':
+                        deleteImage(images[currentIndex].name);
                         break;
                     default:
                         break;
@@ -356,11 +362,39 @@ HTML_TEMPLATE = """
 
         function deleteImage(imageName) {
             if (confirm('Are you sure you want to delete this image?')) {
+                const isModalOpen = document.getElementById('imageModal').style.display === 'block';
                 var page = {{ current_page }};
+
                 fetch(`/delete?name=${encodeURIComponent(imageName)}&page=${encodeURIComponent(page)}`, { method: 'POST' })
                     .then(response => {
                         if (response.ok) {
-                            window.location.reload();
+                            if (isModalOpen) {
+                                const deletedIndex = images.findIndex(img => img.name === imageName);
+                                if (deletedIndex === -1) { window.location.reload(); return; }
+
+                                // Remove from array
+                                images.splice(deletedIndex, 1);
+                                
+                                // Remove from DOM
+                                document.querySelector(`.gallery-item img[alt="${imageName}"]`)?.closest('.gallery-item')?.remove();
+
+                                if (images.length === 0) {
+                                    window.location.reload();
+                                    return;
+                                }
+
+                                if (deletedIndex < currentIndex) {
+                                    currentIndex--;
+                                }
+
+                                if (currentIndex >= images.length) {
+                                    currentIndex = images.length - 1;
+                                }
+
+                                document.getElementById('modalImage').src = images[currentIndex].path;
+                            } else {
+                                window.location.reload();
+                            }
                         } else {
                             alert("Failed to delete image");
                         }
@@ -418,28 +452,26 @@ def generate_html(page=1):
 class CustomHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
-        query = parse_qs(parsed_path.query)
-        page = int(query.get("page", [1])[0])
-        generate_html(page)
-        if self.path == "/":
-            self.path = "/index.html"
-        return super().do_GET()
+        if parsed_path.path == '/':
+            with html_lock:
+                query = parse_qs(parsed_path.query)
+                page = int(query.get("page", [1])[0])
+                generate_html(page)
+                self.path = 'index.html'
+                super().do_GET()
+        else:
+            super().do_GET()
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode('utf-8')
         parsed_path = urlparse(self.path)
         query = parse_qs(parsed_path.query)
 
         if parsed_path.path == "/delete":
-            query = parse_qs(parsed_path.query)
-            page = int(query.get("page", [1])[0])
             if "name" in query:
                 image_name = query["name"][0]
                 image_path = os.path.join(IMAGES_DIR, image_name)
                 if os.path.exists(image_path):
                     os.remove(image_path)
-                    generate_html(page)  # Regenerate HTML for the current page
                     self.send_response(200)
                     self.end_headers()
                     return
@@ -450,7 +482,8 @@ class CustomHandler(SimpleHTTPRequestHandler):
 class ImageChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         if event.event_type in ["created", "deleted", "modified"]:
-            generate_html()  # Regenerate HTML for page 1
+            with html_lock:
+                generate_html()  # Regenerate HTML for page 1
 
 # HTTP server in a thread
 class ServerThread(threading.Thread):
@@ -473,6 +506,11 @@ class ServerThread(threading.Thread):
 
 # Main program
 if __name__ == "__main__":
+    base_url_path = os.path.basename(IMAGES_DIR)
+    if not os.path.lexists(base_url_path):
+        print(f"Creating symlink for images: {base_url_path} -> {IMAGES_DIR}")
+        os.symlink(IMAGES_DIR, base_url_path)
+
     # Ensure the HTML is up-to-date at the start
     generate_html()
 
@@ -482,6 +520,7 @@ if __name__ == "__main__":
 
     # Set up the observer to watch for changes in the images directory
     observer = Observer()
+    observer.daemon = True
     observer.schedule(ImageChangeHandler(), path=IMAGES_DIR, recursive=False)
     observer.start()
 
@@ -489,8 +528,9 @@ if __name__ == "__main__":
     def shutdown_handler(signum, frame):
         print("\nStopping observer and HTTP server...")
         observer.stop()
-        observer.join()
         server_thread.stop()
+        if os.path.islink(base_url_path):
+            os.remove(base_url_path)
         print("Stopped.")
         exit(0)
 
